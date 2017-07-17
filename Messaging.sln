@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{2012DD15-E9CF-4514-99C0-1AD061F8A7E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Messaging", "src\Infrastructure\Infrastructure.Messaging\Infrastructure.Messaging.csproj", "{7D5201A2-598F-47B0-94C8-9A41202D9FA8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Messaging.ZeroMq", "src\Infrastructure\Infrastructure.Messaging.ZeroMq\Infrastructure.Messaging.ZeroMq.csproj", "{00525BB4-6884-4264-BBC7-DA08319E796F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{50E0D745-170B-4659-8620-E4B49DE84102}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EndToEndTests", "EndToEndTests", "{BE85D1D4-F61A-429B-AF41-1B64BA5F3177}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZeroMq", "ZeroMq", "{04B583AA-8B99-452B-B2FD-0EB644BBF297}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.ZeroMq.ConsoleApp", "tests\EndToEndTests\ZeroMq\Tests.ZeroMq.ConsoleApp\Tests.ZeroMq.ConsoleApp.csproj", "{83646FA0-CFF7-4269-A16A-F6ECDF536C71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D5201A2-598F-47B0-94C8-9A41202D9FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5201A2-598F-47B0-94C8-9A41202D9FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5201A2-598F-47B0-94C8-9A41202D9FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5201A2-598F-47B0-94C8-9A41202D9FA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00525BB4-6884-4264-BBC7-DA08319E796F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00525BB4-6884-4264-BBC7-DA08319E796F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00525BB4-6884-4264-BBC7-DA08319E796F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00525BB4-6884-4264-BBC7-DA08319E796F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D5201A2-598F-47B0-94C8-9A41202D9FA8} = {2012DD15-E9CF-4514-99C0-1AD061F8A7E9}
+		{00525BB4-6884-4264-BBC7-DA08319E796F} = {2012DD15-E9CF-4514-99C0-1AD061F8A7E9}
+		{BE85D1D4-F61A-429B-AF41-1B64BA5F3177} = {50E0D745-170B-4659-8620-E4B49DE84102}
+		{04B583AA-8B99-452B-B2FD-0EB644BBF297} = {BE85D1D4-F61A-429B-AF41-1B64BA5F3177}
+		{83646FA0-CFF7-4269-A16A-F6ECDF536C71} = {04B583AA-8B99-452B-B2FD-0EB644BBF297}
+	EndGlobalSection
+EndGlobal
