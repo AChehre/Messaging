@@ -11,21 +11,21 @@ namespace Tests.ZeroMq.WebApi.Controllers
     public class CustomersController : Controller
     {
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string name, string id)
+        public async Task<IActionResult> Post([FromBody] CreateCustomerRequest createCustomerRequest)
         {
-            var user = new CreateCustomerRequest(101, "Ahmad");
+       
 
             var messageQueueFactory = new ZeroMqMessageQueueFactory();
 
 
-            var queue = messageQueueFactory.CreateInboundQueue("CreateCustomer", MessagePattern.RequestResponse);
+            var queue = messageQueueFactory.CreateOutboundQueue("CreateCustomer", MessagePattern.RequestResponse);
 
 
             var responseQueue = queue.GetResponseQueue();
 
             queue.Send(new Message
             {
-                Body = user,
+                Body = createCustomerRequest,
                 ResponseAddress = responseQueue.Address
             });
 

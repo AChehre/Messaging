@@ -10,14 +10,20 @@ namespace Tests.ZeroMq.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Start listening.");
+
+            Listen("CreateCustomer", MessagePattern.RequestResponse);
+
+            Console.WriteLine("Listening ended.");
+            Console.ReadKey();
+            
         }
 
         private static void Listen(string name, MessagePattern pattern)
         {
             var factory = new ZeroMqMessageQueueFactory();
 
-            var queue = factory.CreateInboundQueue("CreateCustomer", MessagePattern.RequestResponse);
+            var queue = factory.CreateInboundQueue(name, pattern);
             queue.Listen(q =>
             {
                 (new CustomerService()).CreateCustomer(queue, q);

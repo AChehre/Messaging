@@ -1,14 +1,16 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Messaging.Infrastructure.Messaging
 {
     public abstract class MessageQueueFactory : IMessageQueueFactory
     {
-        protected readonly IDictionary<string, IMessageQueue> _queues;
+        protected static readonly IDictionary<string, IMessageQueue> _queues;
 
-        protected MessageQueueFactory()
+        static MessageQueueFactory()
         {
+            if (_queues == null)
             _queues = new ConcurrentDictionary<string, IMessageQueue>();
         }
 
@@ -20,12 +22,13 @@ namespace Messaging.Infrastructure.Messaging
                 return _queues[key];
 
             var que = CreateMessageQueue();
+         
             que.InitializeInbound(name, pattern);
             _queues[key] = que;
             return _queues[key];
         }
 
-        public IMessageQueue CreateOutnboundQueue(string name, MessagePattern pattern)
+        public IMessageQueue CreateOutboundQueue(string name, MessagePattern pattern)
         {
             var key =
                 $"{Direction.OutBound}:{name}:{pattern}";

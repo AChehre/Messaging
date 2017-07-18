@@ -8,15 +8,19 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
     public class ZeroMqMessageQueue : IMessageQueue
     {
+        private ZeroMqMessageQueueConfig _config;
         private NetMQSocket _socket;
 
-        public string Name { get; }
-        public string Address { get; }
+        public string Name => _config.MessageQueueName;
+
+        public string Address => GetAddress(_config.MessageQueueName);
+
         public IDictionary<string, string> Properties { get; }
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            switch (pattern)
+            _config = new ZeroMqMessageQueueConfig(name, pattern);
+            switch (_config.MessagePattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PushSocket();
@@ -41,7 +45,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
-            switch (pattern)
+            _config = new ZeroMqMessageQueueConfig(name, pattern);
+            switch (_config.MessagePattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PullSocket();
@@ -84,14 +89,20 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void Received(Action<Message> onMessageReceived)
         {
-            var inbound = _socket.ReceiveFrameString();
-            var message = inbound.DeserializeFromJson<Message>();
+            var receivedFrame = _socket.ReceiveFrameString();
+            var message = receivedFrame.DeserializeFromJson<Message>();
             onMessageReceived(message);
         }
 
         public string GetAddress(string name)
         {
-            throw new NotImplementedException();
+            switch (name)
+            {
+                case "CreateCustomer":
+                    return "tcp://localhost:5555";
+                default:
+                    throw new ArgumentException($"Unknown queue name {name}");
+            }
         }
 
         public IMessageQueue GetResponseQueue()
