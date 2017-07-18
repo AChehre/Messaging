@@ -1,8 +1,8 @@
 ﻿namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
-    public class ZeroMqMessageQueueFactory : MessageQueueFactory<ZeroMqMessageQueueConfig>
+    public class ZeroMqMessageQueueFactory : MessageQueueFactory
     {
-        public override IMessageQueue<ZeroMqMessageQueueConfig> CreateMessageQueue()
+        public override IMessageQueue CreateMessageQueue()
         {
             return new ZeroMqMessageQueue();
         }

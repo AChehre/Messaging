@@ -18,13 +18,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
             var messageQueueFactory = new ZeroMqMessageQueueFactory();
 
 
-            var config = new ZeroMqMessageQueueConfig
-            {
-                MessageQueueName = "CreateCustomer",
-                MessagePattern = MessagePattern.RequestResponse
-            };
-
-            var queue = messageQueueFactory.CreateInboundQueue(config);
+            var queue = messageQueueFactory.CreateInboundQueue("CreateCustomer", MessagePattern.RequestResponse);
 
 
             var responseQueue = queue.GetResponseQueue();

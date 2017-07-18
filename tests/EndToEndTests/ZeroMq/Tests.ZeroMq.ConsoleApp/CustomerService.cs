@@ -9,7 +9,7 @@ namespace Tests.ZeroMq.ConsoleApp
 {
     public class CustomerService
     {
-        public void CreateCustomer(IMessageQueue<MessageQueueConfig> messageQueue, Message message)
+        public void CreateCustomer(IMessageQueue messageQueue, Message message)
         {
 
             var customerName = message.BodyAs<CreateCustomerRequest>().Name;

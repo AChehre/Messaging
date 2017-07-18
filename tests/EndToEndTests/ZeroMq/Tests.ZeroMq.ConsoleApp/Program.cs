@@ -13,20 +13,15 @@ namespace Tests.ZeroMq.ConsoleApp
             Console.WriteLine("Hello World!");
         }
 
-
         private static void Listen(string name, MessagePattern pattern)
         {
             var factory = new ZeroMqMessageQueueFactory();
-            var config = new ZeroMqMessageQueueConfig
+
+            var queue = factory.CreateInboundQueue("CreateCustomer", MessagePattern.RequestResponse);
+            queue.Listen(q =>
             {
-                MessageQueueName = "CreateCustomer",
-                MessagePattern = MessagePattern.RequestResponse
-            };
-            var queue = factory.CreateInboundQueue(config);
-            //queue.Listen(q =>
-            //{
-            //    (new CustomerService()).CreateCustomer(queue, q);
-            //});
+                (new CustomerService()).CreateCustomer(queue, q);
+            });
         }
     }
 }

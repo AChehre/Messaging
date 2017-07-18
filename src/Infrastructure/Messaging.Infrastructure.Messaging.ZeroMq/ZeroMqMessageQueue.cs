@@ -6,19 +6,17 @@ using NetMQ.Sockets;
 
 namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
-    public class ZeroMqMessageQueue : IMessageQueue<ZeroMqMessageQueueConfig>
+    public class ZeroMqMessageQueue : IMessageQueue
     {
-        private ZeroMqMessageQueueConfig _messageQueueConfig;
         private NetMQSocket _socket;
 
         public string Name { get; }
         public string Address { get; }
         public IDictionary<string, string> Properties { get; }
 
-        public void InitializeOutbound(ZeroMqMessageQueueConfig messageQueueConfig)
+        public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            _messageQueueConfig = messageQueueConfig;
-            switch (_messageQueueConfig.MessagePattern)
+            switch (pattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PushSocket();
@@ -36,14 +34,14 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_messageQueueConfig.MessagePattern),
-                        _messageQueueConfig.MessagePattern, null);
+                    throw new ArgumentOutOfRangeException(nameof(pattern),
+                        pattern, null);
             }
         }
 
-        public void InitializeInbound(ZeroMqMessageQueueConfig messageQueueConfig)
+        public void InitializeInbound(string name, MessagePattern pattern)
         {
-            switch (_messageQueueConfig.MessagePattern)
+            switch (pattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PullSocket();
@@ -63,8 +61,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_messageQueueConfig.MessagePattern),
-                        _messageQueueConfig.MessagePattern, null);
+                    throw new ArgumentOutOfRangeException(nameof(pattern),
+                        pattern, null);
             }
         }
 
@@ -96,12 +94,12 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             throw new NotImplementedException();
         }
 
-        public IMessageQueue<ZeroMqMessageQueueConfig> GetResponseQueue()
+        public IMessageQueue GetResponseQueue()
         {
             return this;
         }
 
-        public IMessageQueue<ZeroMqMessageQueueConfig> GetReplyQueue(Message message)
+        public IMessageQueue GetReplyQueue(Message message)
         {
             return this;
         }

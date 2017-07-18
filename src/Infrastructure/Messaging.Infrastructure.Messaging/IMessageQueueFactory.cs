@@ -1,8 +1,8 @@
 ﻿namespace Messaging.Infrastructure.Messaging
 {
-    public interface IMessageQueueFactory<TMessageQueueConfig> where TMessageQueueConfig : MessageQueueConfig
+    public interface IMessageQueueFactory
     {
-        IMessageQueue<TMessageQueueConfig> CreateInboundQueue(TMessageQueueConfig messageQueueConfig);
-        IMessageQueue<TMessageQueueConfig> CreateOutnboundQueue(TMessageQueueConfig messageQueueConfig);
+        IMessageQueue CreateInboundQueue(string name, MessagePattern pattern);
+        IMessageQueue CreateOutnboundQueue(string name, MessagePattern pattern);
     }
 }
