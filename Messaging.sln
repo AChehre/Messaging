@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{2012DD15-E9CF-4514-99C0-1AD061F8A7E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Messaging", "src\Infrastructure\Infrastructure.Messaging\Infrastructure.Messaging.csproj", "{7D5201A2-598F-47B0-94C8-9A41202D9FA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Infrastructure.Messaging", "src\Infrastructure\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj", "{7D5201A2-598F-47B0-94C8-9A41202D9FA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Messaging.ZeroMq", "src\Infrastructure\Infrastructure.Messaging.ZeroMq\Infrastructure.Messaging.ZeroMq.csproj", "{00525BB4-6884-4264-BBC7-DA08319E796F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Infrastructure.Messaging.ZeroMq", "src\Infrastructure\Messaging.Infrastructure.Messaging.ZeroMq\Messaging.Infrastructure.Messaging.ZeroMq.csproj", "{00525BB4-6884-4264-BBC7-DA08319E796F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{50E0D745-170B-4659-8620-E4B49DE84102}"
 EndProject
@@ -15,7 +15,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EndToEndTests", "EndToEndTe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZeroMq", "ZeroMq", "{04B583AA-8B99-452B-B2FD-0EB644BBF297}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.ZeroMq.ConsoleApp", "tests\EndToEndTests\ZeroMq\Tests.ZeroMq.ConsoleApp\Tests.ZeroMq.ConsoleApp.csproj", "{83646FA0-CFF7-4269-A16A-F6ECDF536C71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.ZeroMq.ConsoleApp", "tests\EndToEndTests\ZeroMq\Tests.ZeroMq.ConsoleApp\Tests.ZeroMq.ConsoleApp.csproj", "{83646FA0-CFF7-4269-A16A-F6ECDF536C71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.ZeroMq.WebApi", "tests\EndToEndTests\ZeroMq\Tests.ZeroMq.WebApi\Tests.ZeroMq.WebApi.csproj", "{7E4F508C-78C5-44D7-90FC-F44F789DFCAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Infrastructure.Common", "src\Infrastructure\Messaging.Infrastructure.Common\Messaging.Infrastructure.Common.csproj", "{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,14 @@ Global
 		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83646FA0-CFF7-4269-A16A-F6ECDF536C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E4F508C-78C5-44D7-90FC-F44F789DFCAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E4F508C-78C5-44D7-90FC-F44F789DFCAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E4F508C-78C5-44D7-90FC-F44F789DFCAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E4F508C-78C5-44D7-90FC-F44F789DFCAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,5 +57,7 @@ Global
 		{BE85D1D4-F61A-429B-AF41-1B64BA5F3177} = {50E0D745-170B-4659-8620-E4B49DE84102}
 		{04B583AA-8B99-452B-B2FD-0EB644BBF297} = {BE85D1D4-F61A-429B-AF41-1B64BA5F3177}
 		{83646FA0-CFF7-4269-A16A-F6ECDF536C71} = {04B583AA-8B99-452B-B2FD-0EB644BBF297}
+		{7E4F508C-78C5-44D7-90FC-F44F789DFCAD} = {04B583AA-8B99-452B-B2FD-0EB644BBF297}
+		{A78F1AAE-6CDE-48F3-8ABC-5EB2165C6533} = {2012DD15-E9CF-4514-99C0-1AD061F8A7E9}
 	EndGlobalSection
 EndGlobal
