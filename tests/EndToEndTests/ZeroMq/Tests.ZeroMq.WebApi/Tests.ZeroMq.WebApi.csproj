@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -15,6 +15,12 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Common\Messaging.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging.ZeroMq\Messaging.Infrastructure.Messaging.ZeroMq.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj" />
+    <ProjectReference Include="..\Tests.ZeroMq.CommandQuery\Tests.ZeroMq.CommandQuery.csproj" />
   </ItemGroup>
 
 </Project>
