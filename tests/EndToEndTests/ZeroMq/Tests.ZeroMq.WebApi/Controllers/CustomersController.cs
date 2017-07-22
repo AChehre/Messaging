@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Microsoft.AspNetCore.Mvc;
@@ -13,38 +12,67 @@ namespace Tests.ZeroMq.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateCustomerRequest createCustomerRequest)
         {
-       
+            CustomerCreatedResponse customerCreatedResponse = null;
 
-            var messageQueueFactory = new ZeroMqMessageQueueFactory();
-
-
-            var queue = messageQueueFactory.CreateOutboundQueue("CreateCustomer", MessagePattern.RequestResponse);
-
-
-            var responseQueue = queue.GetResponseQueue();
-
-            queue.Send(new Message
+            await Task.Run(() =>
             {
-                Body = createCustomerRequest,
-                ResponseAddress = responseQueue.Address
+                var messageQueueFactory = new ZeroMqMessageQueueFactory();
+
+
+                var queue = messageQueueFactory.CreateOutboundQueue("Customer", MessagePattern.RequestResponse);
+
+
+                var responseQueue = queue.GetResponseQueue();
+
+                queue.Send(new Message
+                {
+                    Body = createCustomerRequest,
+                    ResponseAddress = responseQueue.Address
+                });
+
+
+                responseQueue.Received(r => customerCreatedResponse = r.BodyAs<CustomerCreatedResponse>());
             });
 
-            var createdCustomerId = 0;
 
-
-            responseQueue.Received(r => createdCustomerId = r.BodyAs<CustomerCreatedResponse>().Id);
-
-            if (createdCustomerId > 0)
-                return Created($"/api/Customers/{createdCustomerId}", createdCustomerId);
+            if (customerCreatedResponse.Id > 0)
+                return Created($"/api/Customers/{customerCreatedResponse.Id}", customerCreatedResponse);
 
 
             return BadRequest("Customer does not created.");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get(int id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            CustomerDeletedResponse customerDeletedResponse = null;
+
+            var messageQueueFactory = new ZeroMqMessageQueueFactory();
+
+
+            var queue = messageQueueFactory.CreateOutboundQueue("Customer", MessagePattern.RequestResponse);
+
+
+            var responseQueue = queue.GetResponseQueue();
+
+
+            queue.Send(new Message
+            {
+                Body = new DeleteCustomerRequest(id),
+                ResponseAddress = responseQueue.Address
+            });
+
+
+            responseQueue.Received(r => customerDeletedResponse = r.BodyAs<CustomerDeletedResponse>());
+
+            await Task.Run(() =>
+            {
+               
+
+            });
+
+
+            return Ok(customerDeletedResponse);
         }
     }
 }

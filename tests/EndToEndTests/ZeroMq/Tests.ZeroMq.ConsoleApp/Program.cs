@@ -12,7 +12,7 @@ namespace Tests.ZeroMq.ConsoleApp
         {
             Console.WriteLine("Start listening.");
 
-            Listen("CreateCustomer", MessagePattern.RequestResponse);
+            Listen("Customer", MessagePattern.RequestResponse);
 
             Console.WriteLine("Listening ended.");
             Console.ReadKey();
@@ -21,13 +21,26 @@ namespace Tests.ZeroMq.ConsoleApp
 
         private static void Listen(string name, MessagePattern pattern)
         {
+            var customerService = new  CustomerService();
             var factory = new ZeroMqMessageQueueFactory();
 
             var queue = factory.CreateInboundQueue(name, pattern);
-            queue.Listen(q =>
+            queue.Listen(message =>Customer(queue, message));
+        }
+
+        private static void Customer(IMessageQueue queue, Message message)
+        {
+            var customerService = new CustomerService();
+            if (message.MessageType == typeof(CreateCustomerRequest).Name)
             {
-                (new CustomerService()).CreateCustomer(queue, q);
-            });
+                customerService.CreateCustomer(queue, message);
+            }
+            else
+            if (message.MessageType == typeof(DeleteCustomerRequest).Name)
+            {
+                customerService.DeleteCustomer(queue, message);
+            }
+
         }
     }
 }

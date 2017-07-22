@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading;
 using Messaging.Infrastructure.Messaging;
-using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
 
 namespace Tests.ZeroMq.ConsoleApp
@@ -11,25 +8,57 @@ namespace Tests.ZeroMq.ConsoleApp
     {
         public void CreateCustomer(IMessageQueue messageQueue, Message message)
         {
-
             var customerName = message.BodyAs<CreateCustomerRequest>().Name;
+
+
+            // The Process ...
+            Thread.Sleep(5000);
+
+
             // Create Customer 
-            var customerCreatedResponse = new CustomerCreatedResponse()
+            var id = 1000;
+
+            var customerCreatedResponse = new CustomerCreatedResponse
             {
-                Id = 10  //Created customer Id
+                Id = id //Created customer Id
             };
 
 
             var replyQueue = messageQueue.GetReplyQueue(message);
 
-            replyQueue.Send(new Message()
+            replyQueue.Send(new Message
             {
                 Body = customerCreatedResponse,
                 ResponseAddress = message.ResponseAddress
-
             });
-
         }
 
+
+        public void DeleteCustomer(IMessageQueue messageQueue, Message message)
+        {
+            var customerId = message.BodyAs<DeleteCustomerRequest>().Id;
+
+
+            // The Process ...
+            Thread.Sleep(1000);
+
+
+            // Delete Customer 
+            var deleted = true;
+
+            var customerdeletedResponse = new CustomerDeletedResponse
+            {
+                Deleted = deleted
+            };
+
+
+            var replyQueue = messageQueue.GetReplyQueue(message);
+
+            replyQueue.Send(new Message
+            {
+                Body = customerdeletedResponse,
+                ResponseAddress = message.ResponseAddress
+            });
+        }
     }
 }

@@ -96,10 +96,14 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public string GetAddress(string name)
         {
-            switch (name)
+            switch (name.ToLower())
             {
-                case "CreateCustomer":
+                case "createcustomer":
                     return "tcp://localhost:5555";
+                case "deletecustomer":
+                    return "tcp://localhost:5556";
+                case "customer":
+                    return "tcp://localhost:5557";
                 default:
                     throw new ArgumentException($"Unknown queue name {name}");
             }
