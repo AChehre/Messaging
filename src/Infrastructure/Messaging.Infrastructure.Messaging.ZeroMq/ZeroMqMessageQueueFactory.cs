@@ -2,14 +2,9 @@
 {
     public class ZeroMqMessageQueueFactory : MessageQueueFactory
     {
-        public override ISyncMessageQueue CreateMessageQueue()
+        public override IMessageQueue CreateMessageQueue()
         {
             return new ZeroMqMessageQueue();
-        }
-
-        public override IASyncMessageQueue CreateMessageQueueAsync()
-        {
-            return new ZeroMqMessageQueueAsync();
         }
     }
 }

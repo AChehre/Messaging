@@ -5,7 +5,7 @@ using NetMQ.Sockets;
 
 namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
-    public class ZeroMqMessageQueue : BaseZeroMqMessageQueue, ISyncMessageQueue
+    public class ZeroMqMessageQueue : BaseZeroMqMessageQueue, IMessageQueue
     {
       
         private NetMQSocket _socket;
@@ -89,12 +89,12 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             throw new NotImplementedException();
         }
 
-        public ISyncMessageQueue GetResponseQueue()
+        public IMessageQueue GetResponseQueue()
         {
             return this;
         }
 
-        public ISyncMessageQueue GetReplyQueue(Message message)
+        public IMessageQueue GetReplyQueue(Message message)
         {
             return this;
         }

@@ -1,41 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
 using Messaging.Infrastructure.Common.Extensions;
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
-    public class BaseZeroMqMessageQueue
+    public class ZeroMqMessageQueueAsync : BaseZeroMqMessageQueue, IMessageQueue
     {
-        protected ZeroMqMessageQueueConfig _config;
-
-        public string Name => _config.MessageQueueName;
-
-        public string Address => GetAddress(_config.MessageQueueName);
-
-        public IDictionary<string, string> Properties { get; }
-
-        public string GetAddress(string name)
-        {
-            switch (name.ToLower())
-            {
-                case "createcustomer":
-                    return "tcp://localhost:5555";
-                case "deletecustomer":
-                    return "tcp://localhost:5556";
-                case "customer":
-                    return "tcp://localhost:5557";
-                default:
-                    throw new ArgumentException($"Unknown queue name {name}");
-            }
-        }
-    }
-
-    public class ZeroMqMessageQueueAsync : BaseZeroMqMessageQueue, IASyncMessageQueue
-    {
+        private NetMQMessage _lastNetMQMessage;
         private NetMQSocket _socket;
 
+        public void Send(Message message)
+        {
+            var multipartMessage = new NetMQMessage();
+            if (_lastNetMQMessage != null)
+            {
+                multipartMessage.Append(_lastNetMQMessage[0]);
+                multipartMessage.AppendEmptyFrame();
+                multipartMessage.Append(message.ToJson());
+                _socket.SendMultipartMessage(multipartMessage);
+                _lastNetMQMessage = null;
+            }
+
+            multipartMessage.Append(message.ToJson());
+            _socket.SendMultipartMessage(multipartMessage);
+        }
+
+        public void Listen(Action<Message> onMessageReceived)
+        {
+            while (true)
+                Received(onMessageReceived);
+        }
+
+        public void Listen(Action<Message> onMessageReceived, string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Received(Action<Message> onMessageReceived)
+        {
+            _lastNetMQMessage = _socket.ReceiveMultipartMessage();
+            var message = _lastNetMQMessage[2].ConvertToString().DeserializeFromJson<Message>();
+            onMessageReceived(message);
+        }
+
+
+        public IMessageQueue GetResponseQueue()
+        {
+            return this;
+        }
+
+        public IMessageQueue GetReplyQueue(Message message)
+        {
+            return this;
+        }
+
+
+        public void Dispose()
+        {
+            _socket?.Dispose();
+        }
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
@@ -67,44 +91,6 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     throw new ArgumentOutOfRangeException(nameof(pattern),
                         pattern, null);
             }
-        }
-
-        public void Send(Message message, string key)
-        {
-            _socket.SendFrame(message.ToJson());
-        }
-
-        public void Received(Action<Message> onMessageReceived)
-        {
-            var receivedFrame = _socket.ReceiveFrameString();
-            var message = receivedFrame.DeserializeFromJson<Message>();
-            onMessageReceived(message);
-        }
-
-        public void Listen(Action<Message> onMessageReceived)
-        {
-            while (true)
-                Received(onMessageReceived);
-        }
-
-        public void Listen(Action<Message> onMessageReceived, string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IASyncMessageQueue GetResponseQueue()
-        {
-            return this;
-        }
-
-        public IASyncMessageQueue GetReplyQueue(Message message)
-        {
-            return this;
-        }
-
-        public void Dispose()
-        {
-            _socket?.Dispose();
         }
     }
 }
