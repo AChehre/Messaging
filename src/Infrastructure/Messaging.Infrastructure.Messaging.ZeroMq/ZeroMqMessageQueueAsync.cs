@@ -1,13 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using Messaging.Infrastructure.Common.Extensions;
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
-    public class ZeroMqMessageQueue : BaseZeroMqMessageQueue, ISyncMessageQueue
+    public class BaseZeroMqMessageQueue
     {
-      
+        protected ZeroMqMessageQueueConfig _config;
+
+        public string Name => _config.MessageQueueName;
+
+        public string Address => GetAddress(_config.MessageQueueName);
+
+        public IDictionary<string, string> Properties { get; }
+
+        public string GetAddress(string name)
+        {
+            switch (name.ToLower())
+            {
+                case "createcustomer":
+                    return "tcp://localhost:5555";
+                case "deletecustomer":
+                    return "tcp://localhost:5556";
+                case "customer":
+                    return "tcp://localhost:5557";
+                default:
+                    throw new ArgumentException($"Unknown queue name {name}");
+            }
+        }
+    }
+
+    public class ZeroMqMessageQueueAsync : BaseZeroMqMessageQueue, IASyncMessageQueue
+    {
         private NetMQSocket _socket;
 
 
@@ -16,19 +42,9 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             _config = new ZeroMqMessageQueueConfig(name, pattern);
             switch (_config.MessagePattern)
             {
-                case MessagePattern.FireAndForget:
-                    _socket = new PushSocket();
-                    _socket.Connect(Address);
-                    break;
-
                 case MessagePattern.RequestResponse:
                     _socket = new RequestSocket();
                     _socket.Connect(Address);
-                    break;
-
-                case MessagePattern.PublishSubscribe:
-                    _socket = new PublisherSocket();
-                    _socket.Bind(Address);
                     break;
 
                 default:
@@ -42,21 +58,9 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             _config = new ZeroMqMessageQueueConfig(name, pattern);
             switch (_config.MessagePattern)
             {
-                case MessagePattern.FireAndForget:
-                    _socket = new PullSocket();
-                    _socket.Bind(Address);
-                    break;
-
                 case MessagePattern.RequestResponse:
-                    _socket = new ResponseSocket();
+                    _socket = new RouterSocket();
                     _socket.Bind(Address);
-                    break;
-
-                case MessagePattern.PublishSubscribe:
-                    var socket = new SubscriberSocket();
-                    socket.Connect(Address);
-                    socket.Subscribe("");
-                    _socket = socket;
                     break;
 
                 default:
@@ -65,11 +69,10 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             }
         }
 
-        public void Send(Message message)
+        public void Send(Message message, string key)
         {
             _socket.SendFrame(message.ToJson());
         }
-
 
         public void Received(Action<Message> onMessageReceived)
         {
@@ -89,12 +92,12 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             throw new NotImplementedException();
         }
 
-        public ISyncMessageQueue GetResponseQueue()
+        public IASyncMessageQueue GetResponseQueue()
         {
             return this;
         }
 
-        public ISyncMessageQueue GetReplyQueue(Message message)
+        public IASyncMessageQueue GetReplyQueue(Message message)
         {
             return this;
         }

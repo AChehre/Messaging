@@ -6,7 +6,7 @@ namespace Tests.ZeroMq.ConsoleApp
 {
     public class CustomerService
     {
-        public void CreateCustomer(IMessageQueue messageQueue, Message message)
+        public void CreateCustomer(ISyncMessageQueue messageQueue, Message message)
         {
             var customerName = message.BodyAs<CreateCustomerRequest>().Name;
 
@@ -34,7 +34,7 @@ namespace Tests.ZeroMq.ConsoleApp
         }
 
 
-        public void DeleteCustomer(IMessageQueue messageQueue, Message message)
+        public void DeleteCustomer(ISyncMessageQueue messageQueue, Message message)
         {
             var customerId = message.BodyAs<DeleteCustomerRequest>().Id;
 

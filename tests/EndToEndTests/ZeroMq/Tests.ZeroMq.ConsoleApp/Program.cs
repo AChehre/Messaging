@@ -28,7 +28,7 @@ namespace Tests.ZeroMq.ConsoleApp
             queue.Listen(message =>Customer(queue, message));
         }
 
-        private static void Customer(IMessageQueue queue, Message message)
+        private static void Customer(ISyncMessageQueue queue, Message message)
         {
             var customerService = new CustomerService();
             if (message.MessageType == typeof(CreateCustomerRequest).Name)
