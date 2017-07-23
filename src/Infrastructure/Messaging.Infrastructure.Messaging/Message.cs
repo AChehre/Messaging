@@ -21,6 +21,7 @@ namespace Messaging.Infrastructure.Messaging
         }
 
         public string ResponseAddress { get; set; }
+        public byte[] ResponseKey { get; set; }
 
         public string MessageType { get; set; }
 

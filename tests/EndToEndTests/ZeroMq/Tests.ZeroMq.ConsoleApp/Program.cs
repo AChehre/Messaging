@@ -12,7 +12,21 @@ namespace Tests.ZeroMq.ConsoleApp
         {
             Console.WriteLine("Start listening.");
 
-            Listen("Customer", MessagePattern.RequestResponse);
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                Listen("CreateCustomer", MessagePattern.RequestResponse);
+            }).Start();
+
+
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                Listen("DeleteCustomer", MessagePattern.RequestResponse);
+            }).Start();
+
+
+            //Listen("Customer", MessagePattern.RequestResponse);
 
             Console.WriteLine("Listening ended.");
             Console.ReadKey();
@@ -22,7 +36,7 @@ namespace Tests.ZeroMq.ConsoleApp
         {
             var factory = new ZeroMqMessageQueueFactory();
             var queue = factory.CreateInboundQueue(name, pattern);
-            queue.Listen(message => Customer(queue, message));
+            queue.Listen(message => CustomerInThreads(queue, message));
         }
 
         private static void Customer(IMessageQueue queue, Message message)
@@ -36,17 +50,19 @@ namespace Tests.ZeroMq.ConsoleApp
 
         private static void CustomerInThreads(IMessageQueue queue, Message message)
         {
-            var customerService = new CustomerService();
+           
             if (message.MessageType == typeof(CreateCustomerRequest).Name)
                 new Thread(() =>
                 {
                     Thread.CurrentThread.IsBackground = true;
+                    var customerService = new CustomerService();
                     customerService.CreateCustomer(queue, message);
                 }).Start();
             else if (message.MessageType == typeof(DeleteCustomerRequest).Name)
                 new Thread(() =>
                 {
                     Thread.CurrentThread.IsBackground = true;
+                    var customerService = new CustomerService();
                     customerService.DeleteCustomer(queue, message);
                 }).Start();
         }

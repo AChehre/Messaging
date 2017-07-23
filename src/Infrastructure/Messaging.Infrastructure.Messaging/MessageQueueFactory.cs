@@ -13,6 +13,13 @@ namespace Messaging.Infrastructure.Messaging
                 _queues = new ConcurrentDictionary<string, IMessageQueue>();
         }
 
+        //protected  readonly IDictionary<string, IMessageQueue> _queues;
+
+        //protected MessageQueueFactory()
+        //{
+        //        _queues = new ConcurrentDictionary<string, IMessageQueue>();
+        //}
+
         public IMessageQueue CreateInboundQueue(string name, MessagePattern pattern)
         {
             var key =
@@ -29,6 +36,7 @@ namespace Messaging.Infrastructure.Messaging
 
         public IMessageQueue CreateOutboundQueue(string name, MessagePattern pattern)
         {
+
             var key =
                 $"{Direction.OutBound}:{name}:{pattern}";
             if (_queues.ContainsKey(key))

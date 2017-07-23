@@ -7,23 +7,26 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
     public class ZeroMqMessageQueueAsync : BaseZeroMqMessageQueue, IMessageQueue
     {
-        private NetMQMessage _lastNetMQMessage;
         private NetMQSocket _socket;
+
 
         public void Send(Message message)
         {
             var multipartMessage = new NetMQMessage();
-            if (_lastNetMQMessage != null)
+
+
+            if (message.ResponseKey == null || message.ResponseKey.Length == 0)
             {
-                multipartMessage.Append(_lastNetMQMessage[0]);
+                multipartMessage.Append(message.ToJson());
+                _socket.SendMultipartMessage(multipartMessage);
+            }
+            else
+            {
+                multipartMessage.Append(new NetMQFrame(message.ResponseKey));
                 multipartMessage.AppendEmptyFrame();
                 multipartMessage.Append(message.ToJson());
                 _socket.SendMultipartMessage(multipartMessage);
-                _lastNetMQMessage = null;
             }
-
-            multipartMessage.Append(message.ToJson());
-            _socket.SendMultipartMessage(multipartMessage);
         }
 
         public void Listen(Action<Message> onMessageReceived)
@@ -39,9 +42,21 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void Received(Action<Message> onMessageReceived)
         {
-            _lastNetMQMessage = _socket.ReceiveMultipartMessage();
-            var message = _lastNetMQMessage[2].ConvertToString().DeserializeFromJson<Message>();
-            onMessageReceived(message);
+            var receiveMessage = _socket.ReceiveMultipartMessage();
+
+
+            if (receiveMessage.FrameCount > 1)
+
+            {
+                var message = receiveMessage[2].ConvertToString().DeserializeFromJson<Message>();
+                message.ResponseKey = receiveMessage[0].ToByteArray();
+                onMessageReceived(message);
+            }
+            else
+            {
+                var message = receiveMessage[0].ConvertToString().DeserializeFromJson<Message>();
+                onMessageReceived(message);
+            }
         }
 
 

@@ -13,7 +13,7 @@ namespace Tests.ZeroMq.CommandQuery
 
         public override string ToString()
         {
-            return $"CustomerCreatedResponse - {Deleted}";
+            return $"CustomerDeleteResponse - {Deleted}";
         }
     }
 }

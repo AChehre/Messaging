@@ -19,7 +19,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
                 var messageQueueFactory = new ZeroMqMessageQueueFactory();
 
 
-                var queue = messageQueueFactory.CreateOutboundQueue("Customer", MessagePattern.RequestResponse);
+                var queue = messageQueueFactory.CreateOutboundQueue("CreateCustomer", MessagePattern.RequestResponse);
 
 
                 var responseQueue = queue.GetResponseQueue();
@@ -50,7 +50,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
             var messageQueueFactory = new ZeroMqMessageQueueFactory();
 
 
-            var queue = messageQueueFactory.CreateOutboundQueue("Customer", MessagePattern.RequestResponse);
+            var queue = messageQueueFactory.CreateOutboundQueue("DeleteCustomer", MessagePattern.RequestResponse);
 
 
             var responseQueue = queue.GetResponseQueue();

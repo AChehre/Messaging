@@ -4,7 +4,7 @@
     {
         public override IMessageQueue CreateMessageQueue()
         {
-            return new ZeroMqMessageQueue();
+            return new ZeroMqMessageQueueAsync();
         }
     }
 }

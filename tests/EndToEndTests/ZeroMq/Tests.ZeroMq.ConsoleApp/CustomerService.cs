@@ -29,7 +29,8 @@ namespace Tests.ZeroMq.ConsoleApp
             replyQueue.Send(new Message
             {
                 Body = customerCreatedResponse,
-                ResponseAddress = message.ResponseAddress
+                ResponseAddress = message.ResponseAddress,
+                ResponseKey = message.ResponseKey
             });
         }
 
@@ -56,7 +57,9 @@ namespace Tests.ZeroMq.ConsoleApp
             replyQueue.Send(new Message
             {
                 Body = customerdeletedResponse,
-                ResponseAddress = message.ResponseAddress
+                ResponseAddress = message.ResponseAddress,
+                ResponseKey = message.ResponseKey
+                
             });
         }
     }
