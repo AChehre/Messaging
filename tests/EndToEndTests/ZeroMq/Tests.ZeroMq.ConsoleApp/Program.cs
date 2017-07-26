@@ -28,8 +28,7 @@ namespace Tests.ZeroMq.ConsoleApp
 
             //Listen("Customer", MessagePattern.RequestResponse);
 
-            Console.WriteLine("Listening ended.");
-            Console.ReadKey();
+      
         }
 
         private static void Listen(string name, MessagePattern pattern)

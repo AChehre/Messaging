@@ -30,8 +30,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
                     ResponseAddress = responseQueue.Address
                 });
 
-
-                responseQueue.ReceivedW(r => customerCreatedResponse = r.BodyAs<CustomerCreatedResponse>());
+                responseQueue.Received(r => customerCreatedResponse = r.BodyAs<CustomerCreatedResponse>());
             });
 
 

@@ -23,6 +23,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     return "tcp://localhost:5556";
                 case "customer":
                     return "tcp://localhost:5557";
+                case "loadtestrepreq":
+                    return "tcp://localhost:5558";
                 default:
                     throw new ArgumentException($"Unknown queue name {name}");
             }

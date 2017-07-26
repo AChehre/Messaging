@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging.ZeroMq\Messaging.Infrastructure.Messaging.ZeroMq.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj" />
+    <ProjectReference Include="..\..\Tests.ZeroMq.CommandQuery\Tests.ZeroMq.CommandQuery.csproj" />
+  </ItemGroup>
+
+</Project>
