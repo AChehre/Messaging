@@ -13,6 +13,7 @@ namespace Messaging.Infrastructure.Messaging
         string GetAddress(string name);
         void Send(Message message);
         void Received(Action<Message> onMessageReceived);
+        void ReceivedW(Action<Message> onMessageReceived);
         void Listen(Action<Message> onMessageReceived);
         void Listen(Action<Message> onMessageReceived, string key);
         IMessageQueue GetResponseQueue();

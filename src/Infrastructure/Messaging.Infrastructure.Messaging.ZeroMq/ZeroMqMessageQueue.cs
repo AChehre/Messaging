@@ -78,6 +78,11 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             onMessageReceived(message);
         }
 
+        public void ReceivedW(Action<Message> onMessageReceived)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Listen(Action<Message> onMessageReceived)
         {
             while (true)
