@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,48 @@ namespace Tests.ZeroMq.WebApi.Controllers
     [Route("api/[controller]")]
     public class CustomersController : Controller
     {
+        [HttpPost("PostWithPubSub")]
+        public async Task<IActionResult> PostWithPubSub([FromBody] CreateCustomerRequest createCustomerRequest)
+        {
+            CustomerCreatedResponse customerCreatedResponse = null;
+
+            await Task.Run(() => { customerCreatedResponse = CustomerCreatedResponse(createCustomerRequest); });
+
+
+            if (customerCreatedResponse.Id > 0)
+                return Created($"/api/Customers/{customerCreatedResponse.Id}", customerCreatedResponse);
+
+
+            return BadRequest("Customer does not created.");
+        }
+
+        private CustomerCreatedResponse CustomerCreatedResponse(CreateCustomerRequest createCustomerRequest)
+        {
+            CustomerCreatedResponse customerCreatedResponse = null;
+            var messageQueueFactory = new ZeroMqMessageQueueFactory();
+
+
+            var queue = messageQueueFactory.CreateOutboundQueue("customer-with-pubsub", MessagePattern.PublishSubscribe);
+            var key = Guid.NewGuid().ToString();
+            var answerqueue =
+                messageQueueFactory.CreateInboundQueue(
+                    new MessageQueueConfig("customer-with-pubsub-answer", MessagePattern.PublishSubscribe)
+                    {
+                        SubscribeKey = key
+                    });
+
+
+            queue.Send(new Message
+            {
+                Body = createCustomerRequest,
+                ResponseKey = Encoding.Unicode.GetBytes(key)
+            }, "customer-with-pubsub");
+
+            answerqueue.Received(r => customerCreatedResponse = r.BodyAs<CustomerCreatedResponse>());
+            return customerCreatedResponse;
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateCustomerRequest createCustomerRequest)
         {
@@ -16,7 +60,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
 
             await Task.Run(() =>
             {
-                var messageQueueFactory = new ZeroMqMessageQueueFactory();
+                var messageQueueFactory = new ZeroMqMessageQueueFactoryAsync();
 
 
                 var queue = messageQueueFactory.CreateOutboundQueue("CreateCustomer", MessagePattern.RequestResponse);
@@ -46,7 +90,7 @@ namespace Tests.ZeroMq.WebApi.Controllers
         {
             CustomerDeletedResponse customerDeletedResponse = null;
 
-            var messageQueueFactory = new ZeroMqMessageQueueFactory();
+            var messageQueueFactory = new ZeroMqMessageQueueFactoryAsync();
 
 
             var queue = messageQueueFactory.CreateOutboundQueue("DeleteCustomer", MessagePattern.RequestResponse);

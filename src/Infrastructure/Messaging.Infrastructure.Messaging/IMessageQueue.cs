@@ -10,8 +10,10 @@ namespace Messaging.Infrastructure.Messaging
         IDictionary<string, string> Properties { get; }
         void InitializeOutbound(string name, MessagePattern pattern);
         void InitializeInbound(string name, MessagePattern pattern);
+        void InitializeInbound(MessageQueueConfig config);
         string GetAddress(string name);
         void Send(Message message);
+        void Send(Message message, string key);
         void Received(Action<Message> onMessageReceived);
         void Listen(Action<Message> onMessageReceived);
         void Listen(Action<Message> onMessageReceived, string key);

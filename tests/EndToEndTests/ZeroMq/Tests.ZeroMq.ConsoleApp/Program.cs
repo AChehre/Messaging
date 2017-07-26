@@ -33,7 +33,7 @@ namespace Tests.ZeroMq.ConsoleApp
 
         private static void Listen(string name, MessagePattern pattern)
         {
-            var factory = new ZeroMqMessageQueueFactory();
+            var factory = new ZeroMqMessageQueueFactoryAsync();
             var queue = factory.CreateInboundQueue(name, pattern);
             queue.Listen(message => CustomerInThreads(queue, message));
         }

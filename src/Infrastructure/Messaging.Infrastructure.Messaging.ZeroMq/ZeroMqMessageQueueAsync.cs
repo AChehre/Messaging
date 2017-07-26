@@ -12,7 +12,14 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
-            _config = new ZeroMqMessageQueueConfig(name, pattern);
+            var config = new MessageQueueConfig(name, pattern);
+            InitializeInbound(config);
+        }
+
+        public void InitializeInbound(MessageQueueConfig config)
+        {
+            _config = config;
+
             switch (_config.MessagePattern)
             {
                 case MessagePattern.RequestResponse:
@@ -21,15 +28,15 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pattern),
-                        pattern, null);
+                    throw new ArgumentOutOfRangeException(nameof(config.MessageQueueName),
+                        config.MessagePattern, null);
             }
         }
 
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            _config = new ZeroMqMessageQueueConfig(name, pattern);
+            _config = new MessageQueueConfig(name, pattern);
             switch (_config.MessagePattern)
             {
                 case MessagePattern.RequestResponse:
@@ -38,7 +45,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pattern),
+                    throw new ArgumentOutOfRangeException(nameof(name),
                         pattern, null);
             }
         }
@@ -60,6 +67,11 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 multipartMessage.Append(message.ToJson());
                 _socket.SendMultipartMessage(multipartMessage);
             }
+        }
+
+        public void Send(Message message, string key)
+        {
+            throw new NotImplementedException();
         }
 
         public void Listen(Action<Message> onMessageReceived)

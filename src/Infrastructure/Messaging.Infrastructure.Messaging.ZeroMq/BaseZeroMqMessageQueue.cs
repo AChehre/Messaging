@@ -5,7 +5,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
     public class BaseZeroMqMessageQueue
     {
-        protected ZeroMqMessageQueueConfig _config;
+        protected MessageQueueConfig _config;
 
         public string Name => _config.MessageQueueName;
 
@@ -25,6 +25,10 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     return "tcp://localhost:5557";
                 case "loadtestrepreq":
                     return "tcp://localhost:5558";
+                case "customer-with-pubsub":
+                    return "tcp://localhost:5559";
+                case "customer-with-pubsub-answer":
+                    return "tcp://localhost:5560";
                 default:
                     throw new ArgumentException($"Unknown queue name {name}");
             }

@@ -34,9 +34,25 @@ namespace Messaging.Infrastructure.Messaging
             return _queues[key];
         }
 
+        public IMessageQueue CreateInboundQueue(MessageQueueConfig config)
+        {
+            var key =
+                $"{Direction.Inbound}:{config.MessageQueueName}:{config.MessagePattern}";
+            if (_queues.ContainsKey(key))
+            {
+                var q = _queues[key];
+                q.InitializeInbound(config);
+                return q;
+            }
+            var que = CreateMessageQueue();
+
+            que.InitializeInbound(config);
+            _queues[key] = que;
+            return _queues[key];
+        }
+
         public IMessageQueue CreateOutboundQueue(string name, MessagePattern pattern)
         {
-
             var key =
                 $"{Direction.OutBound}:{name}:{pattern}";
             if (_queues.ContainsKey(key))
@@ -48,9 +64,7 @@ namespace Messaging.Infrastructure.Messaging
             return _queues[key];
         }
 
-      
 
         public abstract IMessageQueue CreateMessageQueue();
-       
     }
 }
