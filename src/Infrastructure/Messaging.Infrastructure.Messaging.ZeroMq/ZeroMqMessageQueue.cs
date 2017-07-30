@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Messaging.Infrastructure.Common.Extensions;
 using NetMQ;
 using NetMQ.Sockets;
@@ -28,7 +27,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
                 case MessagePattern.PublishSubscribe:
                     _socket = new PublisherSocket();
-                    _socket.Options.SendHighWatermark = 1000;
+                    //_socket.Options.SendHighWatermark = 1000;
                     _socket.Bind(Address);
                     break;
 
@@ -40,7 +39,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
-            var config  = new MessageQueueConfig(name, pattern);
+            var config = new MessageQueueConfig(name, pattern);
             InitializeInbound(config);
         }
 
@@ -62,7 +61,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 case MessagePattern.PublishSubscribe:
                     var socket = new SubscriberSocket();
                     socket.Connect(Address);
-                    socket.Options.SendHighWatermark = 1000;
+                    //socket.Options.SendHighWatermark = 1000;
                     socket.Subscribe(_config.SubscribeKey);
                     _socket = socket;
                     break;
@@ -84,7 +83,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 _socket.SendMultipartMessage(multipartMessage);
         }
 
-        public void Send(Message message,string key)
+        public void Send(Message message, string key)
         {
             var multipartMessage = new NetMQMessage();
             multipartMessage.Append(message.ToJson());
@@ -92,11 +91,14 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             if (_config.MessagePattern == MessagePattern.PublishSubscribe)
             {
                 _socket.SendMoreFrame(key).SendMultipartMessage(multipartMessage);
-                Console.WriteLine("Send method"+ key);
+                Console.WriteLine("Send method" + key);
             }
             else
+            {
                 _socket.SendMultipartMessage(multipartMessage);
+            }
         }
+
         public void Received(Action<Message> onMessageReceived)
         {
             NetMQMessage receiveMessage;
@@ -107,7 +109,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 Console.WriteLine("---" + messageTopicReceived);
                 receiveMessage = _socket.ReceiveMultipartMessage();
                 var message = receiveMessage[0].ConvertToString().DeserializeFromJson<Message>();
-                Console.WriteLine( "---" + message.GetType());
+                Console.WriteLine("---" + message.GetType());
                 onMessageReceived(message);
             }
             else

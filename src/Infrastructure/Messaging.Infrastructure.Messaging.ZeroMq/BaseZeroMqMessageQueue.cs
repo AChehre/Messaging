@@ -29,6 +29,10 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     return "tcp://localhost:5559";
                 case "customer-with-pubsub-answer":
                     return "tcp://localhost:5560";
+                case "mix-customer":
+                    return "tcp://localhost:5561";
+                case "mix-publish":
+                    return "tcp://localhost:5562";
                 default:
                     throw new ArgumentException($"Unknown queue name {name}");
             }
