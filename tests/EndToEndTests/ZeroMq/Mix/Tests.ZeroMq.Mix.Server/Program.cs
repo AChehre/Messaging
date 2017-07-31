@@ -27,9 +27,12 @@ namespace Tests.ZeroMq.Mix.Server
 
         private static void Process(IMessageQueue reqQueue, IMessageQueue pubQueue, Message message)
         {
+
+            Show(new string('-', 20));
             var publisherKey = Guid.NewGuid().ToString();
 
             var repQueue = reqQueue.GetReplyQueue(message);
+
 
             repQueue.Send(new Message
             {
@@ -37,6 +40,9 @@ namespace Tests.ZeroMq.Mix.Server
                 ResponseAddress = message.ResponseAddress,
                 ResponseKey = message.ResponseKey
             });
+
+
+            Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
 
 
             Show($"Sending by {publisherKey}");

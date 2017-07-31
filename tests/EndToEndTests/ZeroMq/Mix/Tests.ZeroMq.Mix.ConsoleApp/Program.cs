@@ -17,6 +17,8 @@ namespace Tests.ZeroMq.Mix.ConsoleApp
 
             for (var i = 0; i < 5; i++)
             {
+                Show(new string('-', 20));
+
                 reqQueue.Send(new Message
                 {
                     Body = new CreateCustomerRequest(i, $"ahmad {i}")
