@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Threading;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
@@ -12,7 +10,6 @@ namespace Tests.ZeroMq.Mix.Server
     {
         private static void Main(string[] args)
         {
-
             ScreenTop("Server");
 
             Console.WriteLine("Listening ...");
@@ -23,7 +20,7 @@ namespace Tests.ZeroMq.Mix.Server
 
             reqQueue.Listen(message => { Process(reqQueue, pubQueue, message); });
 
-         
+
             //Thread.Sleep(50000);
             Console.WriteLine();
         }
@@ -41,28 +38,26 @@ namespace Tests.ZeroMq.Mix.Server
                 ResponseKey = message.ResponseKey
             });
 
-            var createCustomerRequest = message.BodyAs<CreateCustomerRequest>();
 
-            createCustomerRequest.ShowOnConsole();
-
-            
-            Console.WriteLine("sending...");
-
-           
+            Show($"Sending by {publisherKey}");
 
 
             var replyMessage = new Message
             {
                 Body = new CustomerCreatedResponse
                 {
-                    Id = createCustomerRequest.Id
-                    //Id = 1
+                    Id = message.BodyAs<CreateCustomerRequest>().Id
                 }
             };
 
 
             Thread.Sleep(100);
             pubQueue.Send(replyMessage, publisherKey);
+        }
+
+        private static void Show(string message)
+        {
+            Console.WriteLine($"{message}\n");
         }
 
         private static void ScreenTop(string title)
