@@ -10,6 +10,8 @@ namespace Tests.ZeroMq.Mix.ConsoleApp
     {
         private static void Main(string[] args)
         {
+            ScreenTop("Client");
+
             var factoryAsync = new ZeroMqMessageQueueFactoryAsync();
             var reqQueue = factoryAsync.CreateOutboundQueue("mix-customer", MessagePattern.RequestResponse);
 
@@ -18,38 +20,48 @@ namespace Tests.ZeroMq.Mix.ConsoleApp
                 reqQueue.Send(new Message
                 {
                     Body = new CreateCustomerRequest(i, $"ahmad {i}")
-                    //Body = new CreateCustomerRequest(1, $"ahmad {1}")
                 });
 
                 var resQueue = reqQueue.GetResponseQueue();
                 resQueue.Received(Process);
             }
 
-            //Process(null);
 
             Thread.Sleep(50000);
         }
 
         private static void Process(Message message)
         {
-            Console.WriteLine(message.BodyAs<string>());
-
             var factory = new ZeroMqMessageQueueFactory();
             var subQueue = factory.CreateInboundQueue(
                 new MessageQueueConfig("mix-publish", MessagePattern.PublishSubscribe)
                 {
                     SubscribeKey = message.BodyAs<string>()
-                    //SubscribeKey = "0d7b8247-d74a-4060-b0bf-a006db9d182c"
                 });
 
 
-            Console.WriteLine("Subscribed...");
+            Show($"Subscribed on {message.BodyAs<string>()}");
             subQueue.Received(ProcessReceive);
         }
 
         private static void ProcessReceive(Message message)
         {
             message.BodyAs<CustomerCreatedResponse>().ShowOnConsole();
+        }
+
+        private static void Show(string message)
+        {
+            Console.WriteLine($"{message}\n");
+
+        }
+
+        private static void ScreenTop(string title)
+        {
+            var dashes = new string('-', title.Length + 20);
+
+            Console.WriteLine(dashes);
+            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
+            Console.WriteLine(dashes);
         }
     }
 }

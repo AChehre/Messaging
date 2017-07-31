@@ -12,6 +12,9 @@ namespace Tests.ZeroMq.Mix.Server
     {
         private static void Main(string[] args)
         {
+
+            ScreenTop("Server");
+
             Console.WriteLine("Listening ...");
             var factoryAsync = new ZeroMqMessageQueueFactoryAsync();
             var reqQueue = factoryAsync.CreateInboundQueue("mix-customer", MessagePattern.RequestResponse);
@@ -20,14 +23,14 @@ namespace Tests.ZeroMq.Mix.Server
 
             reqQueue.Listen(message => { Process(reqQueue, pubQueue, message); });
 
-            //Process(null, null);
-            Thread.Sleep(50000);
+         
+            //Thread.Sleep(50000);
             Console.WriteLine();
         }
 
         private static void Process(IMessageQueue reqQueue, IMessageQueue pubQueue, Message message)
         {
-            var publisherKey = "0d7b8247-d74a-4060-b0bf-a006db9d182c";//Guid.NewGuid().ToString();
+            var publisherKey = Guid.NewGuid().ToString();
 
             var repQueue = reqQueue.GetReplyQueue(message);
 
@@ -60,6 +63,15 @@ namespace Tests.ZeroMq.Mix.Server
 
             Thread.Sleep(100);
             pubQueue.Send(replyMessage, publisherKey);
+        }
+
+        private static void ScreenTop(string title)
+        {
+            var dashes = new string('-', title.Length + 20);
+
+            Console.WriteLine(dashes);
+            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
+            Console.WriteLine(dashes);
         }
     }
 }

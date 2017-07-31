@@ -6,7 +6,7 @@ namespace Tests.ZeroMq.CommandQuery
     {
         public void ShowOnConsole()
         {
-            Console.WriteLine(ToString());
+            Console.WriteLine($"\n {ToString()} \n");
         }
     }
 }

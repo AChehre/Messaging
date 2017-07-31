@@ -27,7 +27,6 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
                 case MessagePattern.PublishSubscribe:
                     _socket = new PublisherSocket();
-                    //_socket.Options.SendHighWatermark = 1000;
                     _socket.Bind(Address);
                     break;
 
@@ -91,7 +90,6 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             if (_config.MessagePattern == MessagePattern.PublishSubscribe)
             {
                 _socket.SendMoreFrame(key).SendMultipartMessage(multipartMessage);
-                Console.WriteLine("Send method" + key);
             }
             else
             {
@@ -106,10 +104,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             if (_config.MessagePattern == MessagePattern.PublishSubscribe)
             {
                 var messageTopicReceived = _socket.ReceiveFrameString();
-                Console.WriteLine("---" + messageTopicReceived);
                 receiveMessage = _socket.ReceiveMultipartMessage();
                 var message = receiveMessage[0].ConvertToString().DeserializeFromJson<Message>();
-                Console.WriteLine("---" + message.GetType());
                 onMessageReceived(message);
             }
             else

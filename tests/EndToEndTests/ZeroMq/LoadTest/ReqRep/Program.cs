@@ -8,13 +8,14 @@ namespace ReqRep
     {
         private static void Main(string[] args)
         {
+            ScreenTop("Server");
+
             var server = new ZeroMqMessageQueue();
             server.InitializeInbound("LoadTestRepReq", MessagePattern.RequestResponse);
 
             while (true)
                 server.Listen(message =>
                 {
-                    //Console.WriteLine(message.BodyAs<string>());
                     server.Send(new Message
                     {
                         Body = "Hi back",
@@ -22,6 +23,18 @@ namespace ReqRep
                         ResponseKey = message.ResponseKey
                     });
                 });
+        }
+
+
+     
+
+        private static void ScreenTop(string title)
+        {
+            var dashes = new string('-', title.Length + 20);
+
+            Console.WriteLine(dashes);
+            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
+            Console.WriteLine(dashes);
         }
     }
 }
