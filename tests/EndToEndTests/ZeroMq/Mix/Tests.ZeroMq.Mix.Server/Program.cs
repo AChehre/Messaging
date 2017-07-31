@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
@@ -29,6 +30,7 @@ namespace Tests.ZeroMq.Mix.Server
         {
 
             Show(new string('-', 20));
+            
             var publisherKey = Guid.NewGuid().ToString();
 
             var repQueue = reqQueue.GetReplyQueue(message);
@@ -42,23 +44,28 @@ namespace Tests.ZeroMq.Mix.Server
             });
 
 
-            Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
-
-
-            Show($"Sending by {publisherKey}");
-
-
-            var replyMessage = new Message
+            Task.Factory.StartNew(() =>
             {
-                Body = new CustomerCreatedResponse
+
+
+                var delayTime = message.BodyAs<CreateCustomerRequest>().Id / 10 * 1000;
+
+                Thread.Sleep(delayTime);
+                Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
+                Show($"Sending by {publisherKey}");
+                var replyMessage = new Message
                 {
-                    Id = message.BodyAs<CreateCustomerRequest>().Id
-                }
-            };
+                    Body = new CustomerCreatedResponse
+                    {
+                        Id = message.BodyAs<CreateCustomerRequest>().Id
+                    }
+                };
 
 
-            Thread.Sleep(100);
-            pubQueue.Send(replyMessage, publisherKey);
+                pubQueue.Send(replyMessage, publisherKey);
+                Show("Sended!");
+
+            }, TaskCreationOptions.LongRunning);
         }
 
         private static void Show(string message)
