@@ -15,7 +15,13 @@ namespace Tests.ZeroMq.Mix.ConsoleApp
             var factoryAsync = new ZeroMqMessageQueueFactoryAsync();
             var reqQueue = factoryAsync.CreateOutboundQueue("mix-customer", MessagePattern.RequestResponse);
 
-            for (var i = 0; i < 5; i++)
+            int startNumber = 0;
+
+            if (args != null && args.Length > 0)
+                startNumber = Convert.ToInt32(args[0]);
+
+
+            for (var i = 1+startNumber; i < 6+startNumber; i++)
             {
                 Show(new string('-', 20));
 
@@ -54,7 +60,6 @@ namespace Tests.ZeroMq.Mix.ConsoleApp
         private static void Show(string message)
         {
             Console.WriteLine($"{message}\n");
-
         }
 
         private static void ScreenTop(string title)
