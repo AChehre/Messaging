@@ -13,20 +13,17 @@ namespace ReqRep
             var server = new ZeroMqMessageQueue();
             server.InitializeInbound("LoadTestRepReq", MessagePattern.RequestResponse);
 
-            while (true)
-                server.Listen(message =>
+            server.Listen(message =>
+            {
+                server.Send(new Message
                 {
-                    server.Send(new Message
-                    {
-                        Body = "Hi back",
-                        ResponseAddress = message.ResponseAddress,
-                        ResponseKey = message.ResponseKey
-                    });
+                    Body = "Hi back",
+                    ResponseAddress = message.ResponseAddress,
+                    ResponseKey = message.ResponseKey
                 });
+            });
         }
 
-
-     
 
         private static void ScreenTop(string title)
         {
