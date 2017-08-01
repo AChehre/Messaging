@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Messaging.Infrastructure.Common\Messaging.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>
