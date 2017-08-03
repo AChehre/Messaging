@@ -6,12 +6,14 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
     public class RabbitMqMessageQueue : IMessageQueue
     {
-        public string Name { get; }
-        public string Address { get; }
-        private IConnection _connection;
         private IModel _channel;
-        public IDictionary<string, string> Properties { get; }
 
+        //private IConnection _connection;
+        public string Name { get; }
+
+        public string Address { get; }
+
+        public IDictionary<string, string> Properties { get; }
 
 
         public void InitializeOutbound(string name, MessagePattern pattern)
@@ -24,14 +26,10 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             throw new NotImplementedException();
         }
 
-        public void InitializeInbound(RabbitMqMessageQueueConfig config)
+        public void InitializeInbound(MessageQueueConfig config)
         {
-            throw new NotImplementedException();
-        }
-
-        void IMessageQueue.InitializeInbound(MessageQueueConfig config)
-        {
-            //
+            _channel = CreateChannel(config.RabbitMq.HostName, config.RabbitMq.ExchangeName,
+                GetExchangeType(config.MessagePattern));
         }
 
 
@@ -81,7 +79,40 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             throw new NotImplementedException();
         }
 
+        private string GetExchangeType(MessagePattern pattern)
+        {
+            switch (pattern)
+            {
+                case MessagePattern.FireAndForget:
+                    return "fanout";
+                    break;
+                case MessagePattern.RequestResponse:
+                    return "direct";
+                    break;
+                case MessagePattern.PublishSubscribe:
+                    return "topic";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
+            }
+        }
 
-     
+        public void InitializeInbound(RabbitMqMessageQueueConfig config)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private IModel CreateChannel(string hostName, string exchangeName, string exchangeType)
+        {
+            //var hostName = hostName ?? GetProperty(HostNamePropertyName, "localhost");
+            var factory = new ConnectionFactory {HostName = hostName};
+
+            var connection = factory.CreateConnection();
+            var channel = connection.CreateModel();
+
+            channel.ExchangeDeclare(exchangeName, exchangeType);
+            return channel;
+        }
     }
 }
