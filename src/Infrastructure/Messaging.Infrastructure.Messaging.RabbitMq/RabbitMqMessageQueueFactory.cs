@@ -4,7 +4,7 @@
     {
         public override IMessageQueue CreateMessageQueue()
         {
-            return new RabbitMqMessageQueue();
+            return new RabbitMqMessageQueue(new RabbitMqConfig("localhost", "guest", "guest"));
         }
     }
 }

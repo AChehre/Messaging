@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Messaging.Infrastructure.Common.Extensions;
 using NetMQ;
 using NetMQ.Sockets;
@@ -9,6 +10,13 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
     {
         private NetMQSocket _socket;
 
+        public ZeroMqMessageQueueAsync()
+        {
+            
+        }
+        public ZeroMqMessageQueueAsync(Dictionary<string, string> addressMapping) : base(addressMapping)
+        {
+        }
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
@@ -28,7 +36,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(config.MessageQueueName),
+                    throw new ArgumentOutOfRangeException(nameof(config.Name),
                         config.MessagePattern, null);
             }
         }

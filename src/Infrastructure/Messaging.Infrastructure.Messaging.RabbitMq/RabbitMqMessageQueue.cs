@@ -1,24 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Messaging.Infrastructure.Common.Extensions;
 using RabbitMQ.Client;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
     public class RabbitMqMessageQueue : IMessageQueue
     {
+        private readonly RabbitMqConfig _rabbitMqConfig;
         private IModel _channel;
+        protected MessageQueueConfig _config;
 
-        //private IConnection _connection;
-        public string Name { get; }
+        public RabbitMqMessageQueue(RabbitMqConfig rabbitMqConfig)
+        {
+            _rabbitMqConfig = rabbitMqConfig;
+        }
 
         public string Address { get; }
+        public string GetAddress(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Name => _config.Name;
+
 
         public IDictionary<string, string> Properties { get; }
 
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            throw new NotImplementedException();
+            _config = new MessageQueueConfig(name, pattern);
+
+            _channel = CreateChannel(_config.Name,
+                GetExchangeType(_config.MessagePattern));
         }
 
         public void InitializeInbound(string name, MessagePattern pattern)
@@ -28,19 +44,17 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            _channel = CreateChannel(config.RabbitMq.HostName, config.RabbitMq.ExchangeName,
-                GetExchangeType(config.MessagePattern));
+            _channel = CreateChannel(Name,
+                GetExchangeType(config.MessagePattern, Direction.Inbound, config.Name, config.SubscribeKey));
         }
 
-
-        public string GetAddress(string name)
-        {
-            throw new NotImplementedException();
-        }
 
         public void Send(Message message)
         {
-            throw new NotImplementedException();
+            _channel.BasicPublish(Name,
+                "",
+                null,
+                Encoding.UTF8.GetBytes(message.ToJson()));
         }
 
         public void Send(Message message, string key)
@@ -85,33 +99,48 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             {
                 case MessagePattern.FireAndForget:
                     return "fanout";
-                    break;
                 case MessagePattern.RequestResponse:
                     return "direct";
-                    break;
                 case MessagePattern.PublishSubscribe:
                     return "topic";
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
             }
         }
 
-        public void InitializeInbound(RabbitMqMessageQueueConfig config)
+
+        private string GetExchangeType(MessagePattern pattern, Direction direction, string name, string key)
         {
-            throw new NotImplementedException();
+            if (pattern == MessagePattern.FireAndForget && key.IsNullOrEmpty())
+                return "fanout";
+
+            switch (pattern)
+            {
+                case MessagePattern.FireAndForget:
+                    return "fanout";
+                case MessagePattern.RequestResponse:
+                    return "direct";
+                case MessagePattern.PublishSubscribe:
+                    return "topic";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
+            }
         }
 
 
-        private IModel CreateChannel(string hostName, string exchangeName, string exchangeType)
+        private IModel CreateChannel(string exchangeName, string exchangeType)
         {
-            //var hostName = hostName ?? GetProperty(HostNamePropertyName, "localhost");
-            var factory = new ConnectionFactory {HostName = hostName};
+            var factory = new ConnectionFactory
+            {
+                HostName = _rabbitMqConfig.HostName,
+                UserName = _rabbitMqConfig.UserName,
+                Password = _rabbitMqConfig.Password
+            };
 
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-            channel.ExchangeDeclare(exchangeName, exchangeType);
+           
             return channel;
         }
     }

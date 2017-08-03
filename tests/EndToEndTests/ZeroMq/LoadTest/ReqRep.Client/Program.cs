@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 
@@ -9,7 +10,7 @@ namespace ReqRep.Client
     {
         private static void Main(string[] args)
         {
-            ScreenTop("Client");
+           Common.ScreenTopClient();
 
             var client = new ZeroMqMessageQueue();
             client.InitializeOutbound("LoadTestRepReq", MessagePattern.RequestResponse);
@@ -37,24 +38,11 @@ namespace ReqRep.Client
 
             stopWatch.Stop();
             var ts = stopWatch.Elapsed;
-            Show($"RunTime Minute:Second:Millisecond " +
+            Common.Show($"RunTime Minute:Second:Millisecond " +
                  $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00} " +
                  $"For {messageCount} Messages");
             Console.ReadKey();
         }
 
-        private static void Show(string message)
-        {
-            Console.WriteLine($"{message}\n");
-        }
-
-        private static void ScreenTop(string title)
-        {
-            var dashes = new string('-', title.Length + 20);
-
-            Console.WriteLine(dashes);
-            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
-            Console.WriteLine(dashes);
-        }
     }
 }

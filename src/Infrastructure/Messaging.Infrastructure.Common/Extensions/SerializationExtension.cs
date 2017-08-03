@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -34,5 +35,7 @@ namespace Messaging.Infrastructure.Common.Extensions
             var jsonString = reader.ReadToEnd();
             return jsonString.DeserializeFromJson<TObject>();
         }
+
+       
     }
 }

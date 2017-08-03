@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Messaging.Infrastructure.Common.Extensions;
 using NetMQ;
 using NetMQ.Sockets;
@@ -9,6 +10,13 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
     {
         private NetMQSocket _socket;
 
+        public ZeroMqMessageQueue()
+        {
+            
+        }
+        public ZeroMqMessageQueue(Dictionary<string, string> addressMapping) : base(addressMapping)
+        {
+        }
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
@@ -66,7 +74,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(config.MessageQueueName),
+                    throw new ArgumentOutOfRangeException(nameof(config.Name),
                         config.MessagePattern, null);
             }
         }
@@ -88,13 +96,9 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             multipartMessage.Append(message.ToJson());
 
             if (_config.MessagePattern == MessagePattern.PublishSubscribe)
-            {
                 _socket.SendMoreFrame(key).SendMultipartMessage(multipartMessage);
-            }
             else
-            {
                 _socket.SendMultipartMessage(multipartMessage);
-            }
         }
 
         public void Received(Action<Message> onMessageReceived)

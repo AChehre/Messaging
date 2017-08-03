@@ -37,7 +37,7 @@ namespace Messaging.Infrastructure.Messaging
         public IMessageQueue CreateInboundQueue(MessageQueueConfig config)
         {
             var key =
-                $"{Direction.Inbound}:{config.MessageQueueName}:{config.MessagePattern}";
+                $"{Direction.Inbound}:{config.Name}:{config.MessagePattern}";
             if (_queues.ContainsKey(key))
             {
                 var q = _queues[key];
