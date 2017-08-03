@@ -20,7 +20,7 @@ namespace SimpleTest.Client
             var basicProperties = model.CreateBasicProperties();
             basicProperties.Persistent = false;
 
-            var message = Encoding.UTF8.GetBytes("Hello 3 from app!");
+            var message = Encoding.UTF8.GetBytes("Hello 4 from app!");
 
             var key = "testapp01";
             model.BasicPublish(exchangeName, key, basicProperties, message);

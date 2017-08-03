@@ -5,35 +5,34 @@ using RabbitMQ.Client.Events;
 
 namespace SimpleTest.Server
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var queueName = "queuetestapp01";
             //var exchangeName = "exchangetestapp01";
 
 
             ScreenTop("Server");
-            var model = CreateModel();
+            var channel = CreateModel();
 
-            var consumer = new QueueingBasicConsumer(model);
-            model.BasicConsume(queueName, false, consumer);
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += OnReceived;
 
-            while (true)
-            {
-                //Get next message
-                var deliveryArgs = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+            var a = channel.BasicConsume(queueName,
+                true,
+                consumer);
 
-                //Serialize message
-                var message = Encoding.Unicode.GetString(deliveryArgs.Body);
-
-                Console.WriteLine("Message Recieved - {0}", message);
-                model.BasicAck(deliveryArgs.DeliveryTag, false);
-            }
-
-
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
         }
 
+        private static void OnReceived(object model, BasicDeliverEventArgs ea)
+        {
+            var body = ea.Body;
+            var message = Encoding.UTF8.GetString(body);
+            Console.WriteLine(" [x] Received {0}", message);
+        }
 
         private static IModel CreateModel()
         {
@@ -49,7 +48,7 @@ namespace SimpleTest.Server
             Show("Connection Created.");
             var model = connection.CreateModel();
             Show("Model Created;");
-            model.BasicQos(0, 1, false);
+            //model.BasicQos(0, 1, false);
             return model;
         }
 
@@ -58,6 +57,7 @@ namespace SimpleTest.Server
         {
             Console.WriteLine(message);
         }
+
         private static void ScreenTop(string title)
         {
             var dashes = new string('-', title.Length + 20);

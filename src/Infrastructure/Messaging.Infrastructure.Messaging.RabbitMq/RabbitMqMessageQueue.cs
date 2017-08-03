@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using RabbitMQ.Client;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
-   public class RabbitMqMessageQueue: IMessageQueue
+    public class RabbitMqMessageQueue : IMessageQueue
     {
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public string Name { get; }
         public string Address { get; }
+        private IConnection _connection;
+        private IModel _channel;
         public IDictionary<string, string> Properties { get; }
+
+
+
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
             throw new NotImplementedException();
@@ -24,10 +24,16 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             throw new NotImplementedException();
         }
 
-        public void InitializeInbound(MessageQueueConfig config)
+        public void InitializeInbound(RabbitMqMessageQueueConfig config)
         {
             throw new NotImplementedException();
         }
+
+        void IMessageQueue.InitializeInbound(MessageQueueConfig config)
+        {
+            //
+        }
+
 
         public string GetAddress(string name)
         {
@@ -68,5 +74,14 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         {
             throw new NotImplementedException();
         }
+
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+
+     
     }
 }
