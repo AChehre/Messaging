@@ -18,6 +18,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         }
 
         public string Address { get; }
+
         public string GetAddress(string name)
         {
             throw new NotImplementedException();
@@ -32,9 +33,9 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
             _config = new MessageQueueConfig(name, pattern);
-
-            _channel = CreateChannel(_config.Name,
-                GetExchangeType(_config.MessagePattern));
+            _channel = CreateChannel();
+            if (_rabbitMqConfig.CreateExchange)
+                CreateExchange(_channel, name, GetExchangeType(pattern));
         }
 
         public void InitializeInbound(string name, MessagePattern pattern)
@@ -44,8 +45,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            _channel = CreateChannel(Name,
-                GetExchangeType(config.MessagePattern, Direction.Inbound, config.Name, config.SubscribeKey));
+            _channel = CreateChannel();
         }
 
 
@@ -112,23 +112,28 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         private string GetExchangeType(MessagePattern pattern, Direction direction, string name, string key)
         {
             if (pattern == MessagePattern.FireAndForget && key.IsNullOrEmpty())
-                return "fanout";
+                return ExchangeType.Fanout;
 
             switch (pattern)
             {
                 case MessagePattern.FireAndForget:
-                    return "fanout";
+                    return ExchangeType.Fanout;
                 case MessagePattern.RequestResponse:
-                    return "direct";
+                    return ExchangeType.Direct;
                 case MessagePattern.PublishSubscribe:
-                    return "topic";
+                    return ExchangeType.Topic;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
             }
         }
 
+        private void CreateExchange(IModel channel, string exchangeName, string exchangeType)
+        {
+            channel.ExchangeDeclare(exchangeName, exchangeType, false, true, null);
+        }
 
-        private IModel CreateChannel(string exchangeName, string exchangeType)
+
+        private IModel CreateChannel()
         {
             var factory = new ConnectionFactory
             {
@@ -140,7 +145,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
-           
+
             return channel;
         }
     }

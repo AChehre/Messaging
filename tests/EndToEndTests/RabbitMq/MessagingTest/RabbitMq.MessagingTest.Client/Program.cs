@@ -17,6 +17,8 @@ namespace RabbitMq.MessagingTest.Client
             {
                 Body = $"Hi ..."
             });
+
+            Common.Show("End...");
         }
     }
 }
