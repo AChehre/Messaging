@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Messaging.Infrastructure.Common.Extensions;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
@@ -11,6 +12,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         private readonly RabbitMqConfig _rabbitMqConfig;
         private IModel _channel;
         protected MessageQueueConfig _config;
+        private Action<Message> _onMessageReceived;
 
         public RabbitMqMessageQueue(RabbitMqConfig rabbitMqConfig)
         {
@@ -40,14 +42,24 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
-            throw new NotImplementedException();
+            var config = new MessageQueueConfig(name, pattern);
+            InitializeInbound(config);
         }
 
         public void InitializeInbound(MessageQueueConfig config)
         {
+            _config = config;
             _channel = CreateChannel();
-        }
 
+            if (!_rabbitMqConfig.CreateQueue) return;
+
+            var bindings = _rabbitMqConfig.Bindings.Get(config.Name);
+            foreach (var bindingItem in bindings)
+                CreateAndBindQueue(_channel,
+                    bindingItem.ExchangeName,
+                    bindingItem.QueueName,
+                    bindingItem.RoutingKey);
+        }
 
         public void Send(Message message)
         {
@@ -64,7 +76,13 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void Received(Action<Message> onMessageReceived)
         {
-            throw new NotImplementedException();
+            _onMessageReceived = onMessageReceived;
+
+            var consumer = new EventingBasicConsumer(_channel);
+            consumer.Received += OnRabbitMqReceived;
+            _channel.BasicConsume(_config.Name,
+                true,
+                consumer);
         }
 
         public void Listen(Action<Message> onMessageReceived)
@@ -91,6 +109,22 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         public void Dispose()
         {
             throw new NotImplementedException();
+        }
+
+        private void OnRabbitMqReceived(object model, BasicDeliverEventArgs ea)
+        {
+            if (_onMessageReceived == null) return;
+            var body = ea.Body;
+            var jsonObject = Encoding.UTF8.GetString(body);
+            var message = jsonObject.DeserializeFromJson<Message>();
+
+            _onMessageReceived.Invoke(message);
+        }
+
+        private void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
+        {
+            channel.QueueDeclare(queueName, false, false, true, null);
+            channel.QueueBind(queueName, exchangeName, routingKey);
         }
 
         private string GetExchangeType(MessagePattern pattern)

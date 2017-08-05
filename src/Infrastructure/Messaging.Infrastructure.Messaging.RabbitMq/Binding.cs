@@ -7,7 +7,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
     public class RabbitMqBindingItem : ValueObject<RabbitMqBindingItem>
     {
-        public RabbitMqBindingItem(string exchangeName, string queueName, string key)
+        public RabbitMqBindingItem(string exchangeName, string queueName, string routingKey)
         {
             if (string.IsNullOrWhiteSpace(exchangeName))
                 throw new ArgumentNullException(nameof(exchangeName));
@@ -16,13 +16,13 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
                 throw new ArgumentNullException(nameof(queueName));
 
             QueueName = queueName;
-            Key = key;
+            RoutingKey = routingKey;
             ExchangeName = exchangeName;
         }
 
         public string ExchangeName { get; }
         public string QueueName { get; }
-        public string Key { get; }
+        public string RoutingKey { get; }
     }
 
 

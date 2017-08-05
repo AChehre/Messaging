@@ -14,7 +14,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
             };
 
-            return new RabbitMqMessageQueue(new RabbitMqConfig("localhost", "guest", "guest")
+            return new RabbitMqMessageQueue(new RabbitMqConfig("localhost", "guest", "guest", bindings)
             {
                 CreateExchange = true
             });

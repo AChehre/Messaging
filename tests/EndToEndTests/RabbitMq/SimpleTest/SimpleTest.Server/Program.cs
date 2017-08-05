@@ -18,6 +18,7 @@ namespace SimpleTest.Server
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += OnReceived;
+            
 
             var a = channel.BasicConsume(queueName,
                 true,
