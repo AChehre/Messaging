@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Messaging.Infrastructure.Common.Extensions;
@@ -11,13 +12,16 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
     {
         private readonly RabbitMqConfig _rabbitMqConfig;
         private IModel _channel;
-        protected MessageQueueConfig _config;
-        private Action<Message> _onMessageReceived;
+        private MessageQueueConfig _config;
+
+        //private Action<Message> _onMessageReceived;
 
         public RabbitMqMessageQueue(RabbitMqConfig rabbitMqConfig)
         {
             _rabbitMqConfig = rabbitMqConfig;
         }
+
+   
 
         public string Address { get; }
 
@@ -63,10 +67,21 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void Send(Message message)
         {
-            _channel.BasicPublish(Name,
-                "",
-                null,
-                Encoding.UTF8.GetBytes(message.ToJson()));
+            if (_config.MessagePattern == MessagePattern.FireAndForget)
+            {
+                _channel.BasicPublish(Name,
+                    "",
+                    null,
+                    Encoding.UTF8.GetBytes(message.ToJson()));
+            }
+            else
+            {
+                var corrId = Guid.NewGuid().ToString();
+                var props = _channel.CreateBasicProperties();
+                props.ReplyTo = _channel.QueueDeclare().QueueName;
+                ;
+                props.CorrelationId = corrId;
+            }
         }
 
         public void Send(Message message, string key)
@@ -76,13 +91,17 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void Received(Action<Message> onMessageReceived)
         {
-            _onMessageReceived = onMessageReceived;
+            //_onMessageReceived = onMessageReceived;
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += OnRabbitMqReceived;
             _channel.BasicConsume(_config.Name,
                 true,
                 consumer);
+
+
+            //BlockingCollection<IRabbitMessage> q;
+            //q.TryTake(out message, TimeSpan.FromSeconds(60))
         }
 
         public void Listen(Action<Message> onMessageReceived)
@@ -113,12 +132,16 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         private void OnRabbitMqReceived(object model, BasicDeliverEventArgs ea)
         {
-            if (_onMessageReceived == null) return;
-            var body = ea.Body;
-            var jsonObject = Encoding.UTF8.GetString(body);
-            var message = jsonObject.DeserializeFromJson<Message>();
+            //ea.BasicProperties.CorrelationId
 
-            _onMessageReceived.Invoke(message);
+            //_messageQueue.TryAdd()
+
+            //if (_onMessageReceived == null) return;
+            //var body = ea.Body;
+            //var jsonObject = Encoding.UTF8.GetString(body);
+            //var message = jsonObject.DeserializeFromJson<Message>();
+
+            //_onMessageReceived.Invoke(message);
         }
 
         private void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
@@ -163,7 +186,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         private void CreateExchange(IModel channel, string exchangeName, string exchangeType)
         {
-            channel.ExchangeDeclare(exchangeName, exchangeType, false, true, null);
+            channel.ExchangeDeclare(exchangeName, exchangeType, true, false, null);
         }
 
 
@@ -182,5 +205,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
             return channel;
         }
+
+
     }
 }

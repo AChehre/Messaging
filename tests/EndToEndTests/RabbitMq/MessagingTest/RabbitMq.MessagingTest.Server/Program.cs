@@ -1,12 +1,21 @@
-﻿using System;
+﻿using CommonClassLibrary;
+using Messaging.Infrastructure.Messaging;
+using Messaging.Infrastructure.Messaging.RabbitMq;
 
 namespace RabbitMq.MessagingTest.Server
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Common.ScreenTopServer();
+
+            var factory = new RabbitMqMessageQueueFactory();
+            var client = factory.CreateInboundQueue("fanoutexchangequeue", MessagePattern.FireAndForget);
+
+            client.Received(message => { Common.Show(message.BodyAs<string>()); });
+
+            Common.Show("End...");
         }
     }
 }

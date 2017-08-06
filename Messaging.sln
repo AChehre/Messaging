@@ -53,11 +53,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.SimpleTest.Server"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessagingTest", "MessagingTest", "{90AC4B4A-C81A-496F-B1E7-BB33E37AB537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.MessagingTest.Client", "tests\EndToEndTests\RabbitMq\MessagingTest\RabbitMq.MessagingTest.Client\RabbitMq.MessagingTest.Client.csproj", "{77141E21-C24E-47DD-A638-B283AC935782}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.MessagingTest.Client", "tests\EndToEndTests\RabbitMq\MessagingTest\RabbitMq.MessagingTest.Client\RabbitMq.MessagingTest.Client.csproj", "{77141E21-C24E-47DD-A638-B283AC935782}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.MessagingTest.Server", "tests\EndToEndTests\RabbitMq\MessagingTest\RabbitMq.MessagingTest.Server\RabbitMq.MessagingTest.Server.csproj", "{0F212D67-0315-43B7-A430-9752113DC47C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.MessagingTest.Server", "tests\EndToEndTests\RabbitMq\MessagingTest\RabbitMq.MessagingTest.Server\RabbitMq.MessagingTest.Server.csproj", "{0F212D67-0315-43B7-A430-9752113DC47C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonClassLibrary", "tests\EndToEndTests\CommonClassLibrary\CommonClassLibrary.csproj", "{6764856F-3D88-499F-8174-2CF790BC556F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonClassLibrary", "tests\EndToEndTests\CommonClassLibrary\CommonClassLibrary.csproj", "{6764856F-3D88-499F-8174-2CF790BC556F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rpc", "Rpc", "{7049656C-7AF8-4AFF-B311-559A5BEEC548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.RpcTest.Client", "tests\EndToEndTests\RabbitMq\Rpc\RabbitMq.RpcTest.Client\RabbitMq.RpcTest.Client.csproj", "{7F0AB85C-1C8B-40FC-9B95-5A13865E6817}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.RpcTest.Server", "tests\EndToEndTests\RabbitMq\Rpc\RabbitMq.RpcTest.Server\RabbitMq.RpcTest.Server.csproj", "{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +143,14 @@ Global
 		{6764856F-3D88-499F-8174-2CF790BC556F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6764856F-3D88-499F-8174-2CF790BC556F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6764856F-3D88-499F-8174-2CF790BC556F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F0AB85C-1C8B-40FC-9B95-5A13865E6817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F0AB85C-1C8B-40FC-9B95-5A13865E6817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F0AB85C-1C8B-40FC-9B95-5A13865E6817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F0AB85C-1C8B-40FC-9B95-5A13865E6817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -168,5 +182,8 @@ Global
 		{77141E21-C24E-47DD-A638-B283AC935782} = {90AC4B4A-C81A-496F-B1E7-BB33E37AB537}
 		{0F212D67-0315-43B7-A430-9752113DC47C} = {90AC4B4A-C81A-496F-B1E7-BB33E37AB537}
 		{6764856F-3D88-499F-8174-2CF790BC556F} = {BE85D1D4-F61A-429B-AF41-1B64BA5F3177}
+		{7049656C-7AF8-4AFF-B311-559A5BEEC548} = {23F79171-E4D8-47A1-A7E2-7A62BF5A5DE0}
+		{7F0AB85C-1C8B-40FC-9B95-5A13865E6817} = {7049656C-7AF8-4AFF-B311-559A5BEEC548}
+		{AE9C6AA1-BEE0-4C83-B1B8-7E131A69E4B4} = {7049656C-7AF8-4AFF-B311-559A5BEEC548}
 	EndGlobalSection
 EndGlobal
