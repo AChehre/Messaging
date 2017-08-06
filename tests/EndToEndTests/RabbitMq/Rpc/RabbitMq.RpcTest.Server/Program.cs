@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
+using CommonClassLibrary;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -9,6 +11,7 @@ namespace RabbitMq.RpcTest.Server
     {
         private static void Main(string[] args)
         {
+            Common.ScreenTopServer();
             var factory = new ConnectionFactory {HostName = "localhost"};
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -33,6 +36,10 @@ namespace RabbitMq.RpcTest.Server
                     try
                     {
                         var message = Encoding.UTF8.GetString(body);
+                        Common.Show($"Message received {message}");
+
+                        Thread.Sleep(2000);
+
                         var n = int.Parse(message);
                         Console.WriteLine(" [.] fib({0})", message);
                         response = fib(n).ToString();

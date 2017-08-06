@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using CommonClassLibrary;
 using RabbitMQ.Client;
 
 namespace RabbitMq.RpcTest.Client
@@ -8,6 +9,8 @@ namespace RabbitMq.RpcTest.Client
     {
         private static void Main(string[] args)
         {
+            Common.ScreenTopClient();
+
             var rpcClient = new RPCClient();
 
             Console.WriteLine(" [x] Requesting fib(30)");

@@ -7,7 +7,7 @@ using RabbitMQ.Client.Events;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
-    public class RabbitMqMessageQueue : IMessageQueue
+    public class RabbitMqMessageQueueRpcServer : IMessageQueue
     {
         private readonly RabbitMqConfig _rabbitMqConfig;
         private IModel _channel;
@@ -17,7 +17,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         //private Action<Message> _onMessageReceived;
 
-        public RabbitMqMessageQueue(RabbitMqConfig rabbitMqConfig)
+        public RabbitMqMessageQueueRpcServer(RabbitMqConfig rabbitMqConfig)
         {
             _rabbitMqConfig = rabbitMqConfig;
         }
