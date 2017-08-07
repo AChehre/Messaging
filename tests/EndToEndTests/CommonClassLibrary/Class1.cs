@@ -10,6 +10,11 @@ namespace CommonClassLibrary
         }
 
 
+        public static void ScreenEnd()
+        {
+            ScreenTop("Th End ------------------------!");
+        }
+
         public static void ScreenTopClient()
         {
             ScreenTop("Client");

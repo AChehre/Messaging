@@ -7,17 +7,19 @@ using RabbitMQ.Client.Events;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
-    public class RabbitMqMessageQueueRpcServer : IMessageQueue
+    public class RabbitMqMessageQueueRpcClient : IMessageQueue
     {
         private readonly RabbitMqConfig _rabbitMqConfig;
         private IModel _channel;
         private MessageQueueConfig _config;
-        private Action<Message> _onMessageReceived;
+        private QueueingBasicConsumer _consumer;
+        private string _correlationId;
         private string _queueName;
+        private string _replyQueueName;
 
         //private Action<Message> _onMessageReceived;
 
-        public RabbitMqMessageQueueRpcServer(RabbitMqConfig rabbitMqConfig)
+        public RabbitMqMessageQueueRpcClient(RabbitMqConfig rabbitMqConfig)
         {
             _rabbitMqConfig = rabbitMqConfig;
         }
@@ -38,6 +40,16 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
+            _config = new MessageQueueConfig(name, pattern);
+            _channel = CreateChannel();
+
+            _queueName = "rpc_queue";
+
+            _replyQueueName = _channel.QueueDeclare().QueueName;
+            _consumer = new QueueingBasicConsumer(_channel);
+            _channel.BasicConsume(_replyQueueName,
+                true,
+                _consumer);
         }
 
         public void InitializeInbound(string name, MessagePattern pattern)
@@ -48,35 +60,20 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            _config = config;
-            _channel = CreateChannel();
-
-            _queueName = "rpc_queue";
-
-
-            _channel.QueueDeclare(_queueName, false,
-                false, false, null);
-            _channel.BasicQos(0, 1, false);
-            var _consumer = new EventingBasicConsumer(_channel);
-            _channel.BasicConsume(_queueName,
-                false, _consumer);
-
-            _consumer.Received += OnRabbitMqReceived;
         }
 
         public void Send(Message message)
         {
-            var replyProps = _channel.CreateBasicProperties();
-            replyProps.CorrelationId = Encoding.UTF8.GetString(message.ResponseKey);
+            _correlationId = Guid.NewGuid().ToString();
+            var props = _channel.CreateBasicProperties();
+            props.ReplyTo = _replyQueueName;
+            props.CorrelationId = _correlationId;
 
-
-            var responseBytes = Encoding.UTF8.GetBytes(message.ToJson());
-            _channel.BasicPublish("", message.ResponseAddress,
-                replyProps, responseBytes);
-
-            var deliveryTag = Convert.ToUInt64(message.Properties["DeliveryTag"]);
-
-            _channel.BasicAck(deliveryTag, false);
+            var messageBytes = Encoding.UTF8.GetBytes(message.ToJson());
+            _channel.BasicPublish("",
+                _queueName,
+                props,
+                messageBytes);
         }
 
         public void Send(Message message, string key)
@@ -86,7 +83,14 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void Received(Action<Message> onMessageReceived)
         {
-            _onMessageReceived = onMessageReceived;
+            //while (true)
+            //{
+                var ea = _consumer.Queue.Dequeue();
+                if (ea.BasicProperties.CorrelationId != _correlationId)
+                    return;
+                var result = Encoding.UTF8.GetString(ea.Body);
+                onMessageReceived.Invoke(result.DeserializeFromJson<Message>());
+            //}
         }
 
         public void Listen(Action<Message> onMessageReceived)
@@ -117,18 +121,6 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         private void OnRabbitMqReceived(object model, BasicDeliverEventArgs ea)
         {
-            var body = ea.Body;
-            var props = ea.BasicProperties;
-
-            var stringBody = Encoding.UTF8.GetString(body);
-
-            var message = stringBody.DeserializeFromJson<Message>();
-            message.ResponseAddress = props.ReplyTo;
-            message.ResponseKey = Encoding.UTF8.GetBytes(props.CorrelationId);
-
-            message.Properties.Add("DeliveryTag", ea.DeliveryTag.ToString());
-
-            _onMessageReceived?.Invoke(message);
         }
 
         private void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)

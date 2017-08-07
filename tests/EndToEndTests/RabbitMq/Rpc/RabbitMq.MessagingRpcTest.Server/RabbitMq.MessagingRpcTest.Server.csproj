@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Common\Messaging.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging.RabbitMq\Messaging.Infrastructure.Messaging.RabbitMq.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\CommonClassLibrary\CommonClassLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
