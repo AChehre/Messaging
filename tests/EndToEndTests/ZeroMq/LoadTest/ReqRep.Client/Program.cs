@@ -10,10 +10,12 @@ namespace ReqRep.Client
     {
         private static void Main(string[] args)
         {
-           Common.ScreenTopClient();
+            Common.ScreenTopClient();
 
-            var client = new ZeroMqMessageQueue();
-            client.InitializeOutbound("LoadTestRepReq", MessagePattern.RequestResponse);
+
+            var factory = new ZeroMqMessageQueueFactory();
+            var client = factory.CreateOutboundQueue("LoadTestRepReq", MessagePattern.RequestResponse);
+
 
             var messageCount = 1000;
 
@@ -23,7 +25,6 @@ namespace ReqRep.Client
 
             for (var i = 0; i < messageCount; i++)
             {
-
                 var responseQueue = client.GetResponseQueue();
 
                 client.Send(new Message
@@ -39,10 +40,9 @@ namespace ReqRep.Client
             stopWatch.Stop();
             var ts = stopWatch.Elapsed;
             Common.Show($"RunTime Minute:Second:Millisecond " +
-                 $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00} " +
-                 $"For {messageCount} Messages");
+                        $"{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds / 10:00} " +
+                        $"For {messageCount} Messages");
             Console.ReadKey();
         }
-
     }
 }

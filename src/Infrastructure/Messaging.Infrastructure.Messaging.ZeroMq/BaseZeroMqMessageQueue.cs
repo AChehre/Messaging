@@ -25,9 +25,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public string GetAddress(string name)
         {
-            
             //TODO: throw exception if name or address is null or not found
-            return _addressMapping[name];
+            return _addressMapping[name.ToLower()];
         }
     }
 }

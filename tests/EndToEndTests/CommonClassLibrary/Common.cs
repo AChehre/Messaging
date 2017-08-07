@@ -7,7 +7,7 @@ namespace CommonClassLibrary
         public static void Show(string message)
         {
             var dateTime = DateTime.Now;
-            Console.WriteLine($"[{dateTime.Hour}:{dateTime.Minute}:{dateTime.Second}:{dateTime.Millisecond}]   {message}");
+            Console.WriteLine($"[{dateTime:HH:mm:ss:fff}]   {message}");
         }
 
         public static void ScreenEnd()

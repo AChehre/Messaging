@@ -10,8 +10,11 @@ namespace ReqRep
         {
             ScreenTop("Server");
 
-            var server = new ZeroMqMessageQueue();
-            server.InitializeInbound("LoadTestRepReq", MessagePattern.RequestResponse);
+        
+
+            var factory = new ZeroMqMessageQueueFactory();
+            var server = factory.CreateInboundQueue("LoadTestRepReq", MessagePattern.RequestResponse);
+
 
             server.Listen(message =>
             {
