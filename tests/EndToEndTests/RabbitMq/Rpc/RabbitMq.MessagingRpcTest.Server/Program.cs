@@ -12,15 +12,14 @@ namespace RabbitMq.MessagingRpcTest.Server
         {
             Common.ScreenTopServer();
 
-            var client = new RabbitMqMessageQueueRpcServer(
-                new RabbitMqConfig("localhost", "guest", "guest", null) {CreateExchange = false, CreateQueue = false});
-            client.InitializeInbound("rpc_queue", MessagePattern.FireAndForget);
+            var factory = new RabbitMqMessageQueueFactory();
+            var server = factory.CreateInboundQueue("rpc_queue", MessagePattern.FireAndForget);
 
 
-            client.Received(message => OnReceived(message, client));
+            Common.Show("Waiting ...");
 
+            server.Received(message => OnReceived(message, server));
 
-            Common.ScreenEnd();
 
             Console.ReadKey();
         }

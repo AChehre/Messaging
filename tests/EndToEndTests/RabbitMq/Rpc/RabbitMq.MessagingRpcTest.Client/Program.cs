@@ -11,24 +11,22 @@ namespace RabbitMq.MessagingRpcTest.Client
         {
             Common.ScreenTopClient();
 
-            var client = new RabbitMqMessageQueueRpcClient(
-                new RabbitMqConfig("localhost", "guest", "guest", null) {CreateExchange = false, CreateQueue = false});
-            client.InitializeOutbound("", MessagePattern.FireAndForget);
+            var factory = new RabbitMqMessageQueueFactory();
 
-            for (int i = 0; i < 5; i++)
+            var client = factory.CreateOutboundQueue("", MessagePattern.FireAndForget);
+
+            for (var i = 0; i < 5; i++)
             {
-                client.Send(new Message { Body = $"{i}" }, "rpc_queue");
+                client.Send(new Message {Body = $"{i}"}, "rpc_queue");
                 client.Received(OnReceived);
             }
 
-         
-
-           
 
             Common.ScreenEnd();
 
             Console.ReadKey();
         }
+
         private static void OnReceived(Message message)
         {
             Common.Show(message.BodyAs<string>());

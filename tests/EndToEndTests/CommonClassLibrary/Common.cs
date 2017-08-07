@@ -6,13 +6,16 @@ namespace CommonClassLibrary
     {
         public static void Show(string message)
         {
-            Console.WriteLine(message);
+            var dateTime = DateTime.Now;
+            Console.WriteLine($"[{dateTime.Hour}:{dateTime.Minute}:{dateTime.Second}:{dateTime.Millisecond}]   {message}");
         }
-
 
         public static void ScreenEnd()
         {
-            ScreenTop("Th End ------------------------!");
+            var dashes = new string('-', 33);
+
+            Console.WriteLine(dashes);
+            Console.WriteLine($"{new string(' ', 15)}END{new string(' ', 15)}");
         }
 
         public static void ScreenTopClient()

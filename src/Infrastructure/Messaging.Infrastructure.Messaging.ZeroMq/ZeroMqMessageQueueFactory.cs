@@ -4,7 +4,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
     public class ZeroMqMessageQueueFactory : MessageQueueFactory
     {
-        public override IMessageQueue CreateMessageQueue()
+        public override IMessageQueue CreateMessageQueue(Direction direction)
         {
             return new ZeroMqMessageQueue(new Dictionary<string, string>
             {
