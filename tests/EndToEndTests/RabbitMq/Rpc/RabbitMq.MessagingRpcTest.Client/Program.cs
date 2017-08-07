@@ -17,7 +17,7 @@ namespace RabbitMq.MessagingRpcTest.Client
 
             for (int i = 0; i < 5; i++)
             {
-                client.Send(new Message { Body = $"{i}" });
+                client.Send(new Message { Body = $"{i}" }, "rpc_queue");
                 client.Received(OnReceived);
             }
 

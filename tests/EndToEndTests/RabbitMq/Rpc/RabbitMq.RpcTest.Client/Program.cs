@@ -49,9 +49,7 @@ namespace RabbitMq.RpcTest.Client
             props.CorrelationId = corrId;
 
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish("",
-                "rpc_queue",
-                props,
+            channel.BasicPublish("","rpc_queue",props,
                 messageBytes);
 
             while (true)

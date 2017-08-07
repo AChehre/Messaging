@@ -14,7 +14,7 @@ namespace RabbitMq.MessagingRpcTest.Server
 
             var client = new RabbitMqMessageQueueRpcServer(
                 new RabbitMqConfig("localhost", "guest", "guest", null) {CreateExchange = false, CreateQueue = false});
-            client.InitializeInbound("", MessagePattern.FireAndForget);
+            client.InitializeInbound("rpc_queue", MessagePattern.FireAndForget);
 
 
             client.Received(message => OnReceived(message, client));

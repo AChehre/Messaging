@@ -14,7 +14,6 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         private MessageQueueConfig _config;
         private QueueingBasicConsumer _consumer;
         private string _correlationId;
-        private string _queueName;
         private string _replyQueueName;
 
         //private Action<Message> _onMessageReceived;
@@ -43,7 +42,6 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             _config = new MessageQueueConfig(name, pattern);
             _channel = CreateChannel();
 
-            _queueName = "rpc_queue";
 
             _replyQueueName = _channel.QueueDeclare().QueueName;
             _consumer = new QueueingBasicConsumer(_channel);
@@ -64,33 +62,28 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void Send(Message message)
         {
+        }
+
+        public void Send(Message message, string key)
+        {
             _correlationId = Guid.NewGuid().ToString();
             var props = _channel.CreateBasicProperties();
             props.ReplyTo = _replyQueueName;
             props.CorrelationId = _correlationId;
 
             var messageBytes = Encoding.UTF8.GetBytes(message.ToJson());
-            _channel.BasicPublish("",
-                _queueName,
+            _channel.BasicPublish(_config.Name, key,
                 props,
                 messageBytes);
         }
 
-        public void Send(Message message, string key)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Received(Action<Message> onMessageReceived)
         {
-            //while (true)
-            //{
-                var ea = _consumer.Queue.Dequeue();
-                if (ea.BasicProperties.CorrelationId != _correlationId)
-                    return;
-                var result = Encoding.UTF8.GetString(ea.Body);
-                onMessageReceived.Invoke(result.DeserializeFromJson<Message>());
-            //}
+            var ea = _consumer.Queue.Dequeue();
+            if (ea.BasicProperties.CorrelationId != _correlationId)
+                return;
+            var result = Encoding.UTF8.GetString(ea.Body);
+            onMessageReceived.Invoke(result.DeserializeFromJson<Message>());
         }
 
         public void Listen(Action<Message> onMessageReceived)

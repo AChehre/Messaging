@@ -13,7 +13,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         private IModel _channel;
         private MessageQueueConfig _config;
         private Action<Message> _onMessageReceived;
-        private string _queueName;
+
 
         //private Action<Message> _onMessageReceived;
 
@@ -51,14 +51,12 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             _config = config;
             _channel = CreateChannel();
 
-            _queueName = "rpc_queue";
 
-
-            _channel.QueueDeclare(_queueName, false,
+            _channel.QueueDeclare(_config.Name, false,
                 false, false, null);
             _channel.BasicQos(0, 1, false);
             var _consumer = new EventingBasicConsumer(_channel);
-            _channel.BasicConsume(_queueName,
+            _channel.BasicConsume(_config.Name,
                 false, _consumer);
 
             _consumer.Received += OnRabbitMqReceived;
