@@ -9,6 +9,7 @@
     <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Common\Messaging.Infrastructure.Common.csproj" />
     <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging.ZeroMq\Messaging.Infrastructure.Messaging.ZeroMq.csproj" />
     <ProjectReference Include="..\..\..\..\src\Infrastructure\Messaging.Infrastructure.Messaging\Messaging.Infrastructure.Messaging.csproj" />
+    <ProjectReference Include="..\..\CommonClassLibrary\CommonClassLibrary.csproj" />
     <ProjectReference Include="..\Tests.ZeroMq.CommandQuery\Tests.ZeroMq.CommandQuery.csproj" />
   </ItemGroup>
 

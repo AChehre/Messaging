@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
 
 namespace Tests.ZeroMq.PubSub.ConsoleAppClient
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-          
+            Common.ScreenTopClient();
 
             CustomerCreatedResponse customerCreatedResponse = null;
             var messageQueueFactory = new ZeroMqMessageQueueFactory();
 
 
-            var queue = messageQueueFactory.CreateOutboundQueue("customer-with-pubsub", MessagePattern.PublishSubscribe);
-            for (int i = 0; i < 5; i++)
+            var queue = messageQueueFactory.CreateOutboundQueue("customer-with-pubsub",
+                MessagePattern.PublishSubscribe);
+            for (var i = 0; i < 5; i++)
             {
-
                 var createCustomerRequest = new CreateCustomerRequest(0, $"ahmad {i}");
 
                 Console.WriteLine($"-----------{i}-----------");
@@ -34,7 +34,7 @@ namespace Tests.ZeroMq.PubSub.ConsoleAppClient
 
 
                 Console.WriteLine(key);
-                
+
                 queue.Send(new Message
                 {
                     Body = createCustomerRequest,
@@ -42,15 +42,12 @@ namespace Tests.ZeroMq.PubSub.ConsoleAppClient
                 }, "customer-with-pubsub");
 
                 Console.WriteLine("message Sended.");
-               
+
                 answerqueue.Received(r => customerCreatedResponse = r.BodyAs<CustomerCreatedResponse>());
 
 
                 customerCreatedResponse.ShowOnConsole();
-
-              
             }
-
 
 
             Console.ReadKey();

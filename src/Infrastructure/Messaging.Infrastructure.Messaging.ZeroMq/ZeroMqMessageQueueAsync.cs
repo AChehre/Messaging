@@ -26,9 +26,9 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            _config = config;
+            Config = config;
 
-            switch (_config.MessagePattern)
+            switch (Config.MessagePattern)
             {
                 case MessagePattern.RequestResponse:
                     _socket = new RouterSocket();
@@ -44,8 +44,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            _config = new MessageQueueConfig(name, pattern);
-            switch (_config.MessagePattern)
+            Config = new MessageQueueConfig(name, pattern);
+            switch (Config.MessagePattern)
             {
                 case MessagePattern.RequestResponse:
                     _socket = new RequestSocket();

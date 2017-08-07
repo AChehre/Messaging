@@ -20,8 +20,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            _config = new MessageQueueConfig(name, pattern);
-            switch (_config.MessagePattern)
+            Config = new MessageQueueConfig(name, pattern);
+            switch (Config.MessagePattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PushSocket();
@@ -52,8 +52,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            _config = config;
-            switch (_config.MessagePattern)
+            Config = config;
+            switch (Config.MessagePattern)
             {
                 case MessagePattern.FireAndForget:
                     _socket = new PullSocket();
@@ -69,7 +69,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     var socket = new SubscriberSocket();
                     socket.Connect(Address);
                     //socket.Options.SendHighWatermark = 1000;
-                    socket.Subscribe(_config.SubscribeKey);
+                    socket.Subscribe(Config.SubscribeKey);
                     _socket = socket;
                     break;
 
@@ -84,7 +84,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             var multipartMessage = new NetMQMessage();
             multipartMessage.Append(message.ToJson());
 
-            if (_config.MessagePattern == MessagePattern.PublishSubscribe)
+            if (Config.MessagePattern == MessagePattern.PublishSubscribe)
                 _socket.SendMoreFrame("").SendMultipartMessage(multipartMessage);
             else
                 _socket.SendMultipartMessage(multipartMessage);
@@ -95,7 +95,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
             var multipartMessage = new NetMQMessage();
             multipartMessage.Append(message.ToJson());
 
-            if (_config.MessagePattern == MessagePattern.PublishSubscribe)
+            if (Config.MessagePattern == MessagePattern.PublishSubscribe)
                 _socket.SendMoreFrame(key).SendMultipartMessage(multipartMessage);
             else
                 _socket.SendMultipartMessage(multipartMessage);
@@ -105,7 +105,7 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
         {
             NetMQMessage receiveMessage;
 
-            if (_config.MessagePattern == MessagePattern.PublishSubscribe)
+            if (Config.MessagePattern == MessagePattern.PublishSubscribe)
             {
                 var messageTopicReceived = _socket.ReceiveFrameString();
                 receiveMessage = _socket.ReceiveMultipartMessage();

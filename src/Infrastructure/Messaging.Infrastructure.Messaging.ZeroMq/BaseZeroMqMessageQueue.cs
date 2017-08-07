@@ -1,31 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using Messaging.Infrastructure.Common.Extensions;
 
 namespace Messaging.Infrastructure.Messaging.ZeroMq
 {
     public class BaseZeroMqMessageQueue
     {
-        public BaseZeroMqMessageQueue()
-        {
-            
-        }
-        public BaseZeroMqMessageQueue(Dictionary<string, string> addressMapping)
-        {
-            _addressMapping = addressMapping;
-        }
         private readonly Dictionary<string, string> _addressMapping;
 
-        protected MessageQueueConfig _config;
+        protected MessageQueueConfig Config;
 
-        public string Name => _config.Name;
+        public BaseZeroMqMessageQueue()
+        {
+        }
 
-        public string Address => GetAddress(_config.Name);
+        public BaseZeroMqMessageQueue(Dictionary<string, string> addressMapping)
+        {
+            if (addressMapping == null)
+                throw new ArgumentNullException(nameof(addressMapping));
+            if (addressMapping.Count < 1)
+                throw new ArgumentOutOfRangeException(nameof(addressMapping));
+
+            _addressMapping = addressMapping;
+        }
+
+        public string Name => Config.Name;
+
+        public string Address => GetAddress(Config.Name);
 
         public IDictionary<string, string> Properties { get; }
 
         public string GetAddress(string name)
         {
-            //TODO: throw exception if name or address is null or not found
+            if (name.IsNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(name));
+
             return _addressMapping[name.ToLower()];
         }
     }

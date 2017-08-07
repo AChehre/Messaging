@@ -4,6 +4,11 @@ namespace CommonClassLibrary
 {
     public static class Common
     {
+        public static void Separator()
+        {
+            Console.WriteLine(new string('-', 33));
+        }
+
         public static void Show(string message)
         {
             var dateTime = DateTime.Now;

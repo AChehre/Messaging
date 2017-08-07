@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
@@ -10,7 +11,9 @@ namespace Tests.ZeroMq.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine("Start listening.");
+            Common.ScreenTopServer();
+
+            Common.Show("Start listening.");
 
             new Thread(() =>
             {
@@ -25,10 +28,8 @@ namespace Tests.ZeroMq.ConsoleApp
                 Listen("DeleteCustomer", MessagePattern.RequestResponse);
             }).Start();
 
-
+            Console.ReadKey();
             //Listen("Customer", MessagePattern.RequestResponse);
-
-      
         }
 
         private static void Listen(string name, MessagePattern pattern)
@@ -49,7 +50,6 @@ namespace Tests.ZeroMq.ConsoleApp
 
         private static void CustomerInThreads(IMessageQueue queue, Message message)
         {
-           
             if (message.MessageType == typeof(CreateCustomerRequest).Name)
                 new Thread(() =>
                 {

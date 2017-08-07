@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
@@ -11,7 +12,7 @@ namespace Tests.ZeroMq.Mix.Server
     {
         private static void Main(string[] args)
         {
-            ScreenTop("Server");
+            Common.ScreenTop("Server");
 
             Console.WriteLine("Listening ...");
             var factoryAsync = new ZeroMqMessageQueueFactoryAsync();
@@ -28,9 +29,8 @@ namespace Tests.ZeroMq.Mix.Server
 
         private static void Process(IMessageQueue reqQueue, IMessageQueue pubQueue, Message message)
         {
+            Common.Show(new string('-', 20));
 
-            Show(new string('-', 20));
-            
             var publisherKey = Guid.NewGuid().ToString();
 
             var repQueue = reqQueue.GetReplyQueue(message);
@@ -46,13 +46,11 @@ namespace Tests.ZeroMq.Mix.Server
 
             Task.Factory.StartNew(() =>
             {
-
-
                 var delayTime = message.BodyAs<CreateCustomerRequest>().Id / 10 * 1000;
 
                 Thread.Sleep(delayTime);
-                Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
-                Show($"Sending by {publisherKey}");
+                Common.Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
+                Common.Show($"Sending by {publisherKey}");
                 var replyMessage = new Message
                 {
                     Body = new CustomerCreatedResponse
@@ -63,23 +61,8 @@ namespace Tests.ZeroMq.Mix.Server
 
 
                 pubQueue.Send(replyMessage, publisherKey);
-                Show("Sended!");
-
+                Common.Show("Sended!");
             }, TaskCreationOptions.LongRunning);
-        }
-
-        private static void Show(string message)
-        {
-            Console.WriteLine($"{message}\n");
-        }
-
-        private static void ScreenTop(string title)
-        {
-            var dashes = new string('-', title.Length + 20);
-
-            Console.WriteLine(dashes);
-            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
-            Console.WriteLine(dashes);
         }
     }
 }

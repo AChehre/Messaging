@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Messaging.Infrastructure.Messaging.ZeroMq;
 using Tests.ZeroMq.CommandQuery;
@@ -11,6 +12,8 @@ namespace Tests.ZeroMq.PubSub.ConsoleApp
     {
         private static void Main(string[] args)
         {
+            Common.ScreenTopServer();
+
             var factory = new ZeroMqMessageQueueFactory();
             var sub = factory.CreateInboundQueue(new MessageQueueConfig("customer-with-pubsub", MessagePattern.PublishSubscribe)
             {
@@ -26,8 +29,8 @@ namespace Tests.ZeroMq.PubSub.ConsoleApp
 
         private static void GetValue(IMessageQueue answerServer, Message message)
         {
-            Console.WriteLine("*****************");
-            Console.WriteLine("message received...");
+            Common.Show("*****************");
+            Common.Show("message received...");
             message.BodyAs<CreateCustomerRequest>().ShowOnConsole();
             var id = 1000;
             Thread.Sleep(100);
@@ -43,8 +46,8 @@ namespace Tests.ZeroMq.PubSub.ConsoleApp
             };
             var key = Encoding.Unicode.GetString(message.ResponseKey);
             answerServer.Send(replyMessage, key);
-            Console.WriteLine($"message send by key:{Encoding.Unicode.GetString(message.ResponseKey)}");
-            Console.WriteLine("+++++++++++++++");
+            Common.Show($"message send by key:{Encoding.Unicode.GetString(message.ResponseKey)}");
+            Common.Show("+++++++++++++++");
         }
     }
 }

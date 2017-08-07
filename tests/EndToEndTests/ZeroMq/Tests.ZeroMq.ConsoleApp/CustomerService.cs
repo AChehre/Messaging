@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using CommonClassLibrary;
 using Messaging.Infrastructure.Messaging;
 using Tests.ZeroMq.CommandQuery;
 
@@ -10,11 +11,18 @@ namespace Tests.ZeroMq.ConsoleApp
         {
             var customerName = message.BodyAs<CreateCustomerRequest>().Name;
 
+            Common.Show($"Message received {customerName}");
+
+
+            var sleepTime = 5000;
+
+            Common.Show($"Start process {customerName} for {sleepTime} min");
 
             // The Process ...
-            Thread.Sleep(5000);
+            Thread.Sleep(sleepTime);
 
 
+            
             // Create Customer 
             var id = 1000;
 
@@ -26,12 +34,16 @@ namespace Tests.ZeroMq.ConsoleApp
 
             var replyQueue = messageQueue.GetReplyQueue(message);
 
+
+            Common.Show($"Send message {customerName}");
             replyQueue.Send(new Message
             {
                 Body = customerCreatedResponse,
                 ResponseAddress = message.ResponseAddress,
                 ResponseKey = message.ResponseKey
             });
+
+            Common.Separator();
         }
 
         public void DeleteCustomer(IMessageQueue messageQueue, Message message)
@@ -39,8 +51,15 @@ namespace Tests.ZeroMq.ConsoleApp
             var customerId = message.BodyAs<DeleteCustomerRequest>().Id;
 
 
+            Common.Show($"Message received {customerId}");
+
+
+            var sleepTime = 1000;
+
+            Common.Show($"Start process {customerId} for {sleepTime} min");
+
             // The Process ...
-            Thread.Sleep(1000);
+            Thread.Sleep(sleepTime);
 
 
             // Delete Customer 
@@ -54,6 +73,7 @@ namespace Tests.ZeroMq.ConsoleApp
 
             var replyQueue = messageQueue.GetReplyQueue(message);
 
+            Common.Show($"Send message {customerId}");
             replyQueue.Send(new Message
             {
                 Body = customerdeletedResponse,
@@ -61,6 +81,8 @@ namespace Tests.ZeroMq.ConsoleApp
                 ResponseKey = message.ResponseKey
                 
             });
+
+            Common.Separator();
         }
     }
 }
