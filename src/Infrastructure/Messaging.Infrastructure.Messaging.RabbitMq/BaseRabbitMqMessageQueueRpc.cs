@@ -61,7 +61,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
                 case MessagePattern.RequestResponse:
                     return "direct";
                 case MessagePattern.PublishSubscribe:
-                    return "topic";
+                    return "fanout";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
             }
@@ -80,7 +80,7 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
                 case MessagePattern.RequestResponse:
                     return ExchangeType.Direct;
                 case MessagePattern.PublishSubscribe:
-                    return ExchangeType.Topic;
+                    return ExchangeType.Fanout;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
             }

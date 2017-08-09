@@ -11,6 +11,11 @@ namespace Tests.ZeroMq.WebApi.Controllers
     [Route("api/[controller]")]
     public class CustomersController : Controller
     {
+
+
+     
+
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateCustomerRequest createCustomerRequest)
         {
@@ -18,8 +23,8 @@ namespace Tests.ZeroMq.WebApi.Controllers
 
             await Task.Run(() =>
             {
-                var messageQueueFactory = new ZeroMqMessageQueueFactoryAsync();
 
+                var messageQueueFactory = new ZeroMqMessageQueueFactoryAsync();
 
                 var queue = messageQueueFactory.CreateOutboundQueue("CreateCustomer", MessagePattern.RequestResponse);
 

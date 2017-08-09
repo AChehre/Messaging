@@ -17,7 +17,7 @@ namespace ReqRep.Client
             var client = factory.CreateOutboundQueue("LoadTestRepReq", MessagePattern.RequestResponse);
 
 
-            var messageCount = 1000;
+            var messageCount = 10000;
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using CommonClassLibrary;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -9,22 +10,22 @@ namespace SimpleTest.Server
     {
         private static void Main(string[] args)
         {
+            Common.ScreenTopServer();
+
+
             var queueName = "queuetestapp01";
-            //var exchangeName = "exchangetestapp01";
 
-
-            ScreenTop("Server");
             var channel = CreateModel();
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += OnReceived;
-            
 
-            var a = channel.BasicConsume(queueName,
+
+            channel.BasicConsume(queueName,
                 true,
                 consumer);
 
-            Console.WriteLine(" Press [enter] to exit.");
+            Common.Show("Waiting ...");
             Console.ReadLine();
         }
 
@@ -32,7 +33,7 @@ namespace SimpleTest.Server
         {
             var body = ea.Body;
             var message = Encoding.UTF8.GetString(body);
-            Console.WriteLine(" [x] Received {0}", message);
+            Common.Show($"Received '{message}'");
         }
 
         private static IModel CreateModel()
@@ -46,26 +47,10 @@ namespace SimpleTest.Server
 
 
             var connection = factory.CreateConnection();
-            Show("Connection Created.");
+
             var model = connection.CreateModel();
-            Show("Model Created;");
-            //model.BasicQos(0, 1, false);
+
             return model;
-        }
-
-
-        private static void Show(string message)
-        {
-            Console.WriteLine(message);
-        }
-
-        private static void ScreenTop(string title)
-        {
-            var dashes = new string('-', title.Length + 20);
-
-            Console.WriteLine(dashes);
-            Console.WriteLine($"|{new string(' ', 9)}{title}{new string(' ', 9)}|");
-            Console.WriteLine(dashes);
         }
     }
 }

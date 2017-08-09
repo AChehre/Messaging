@@ -49,6 +49,7 @@ namespace Tests.ZeroMq.Mix.Server
                 var delayTime = message.BodyAs<CreateCustomerRequest>().Id / 10 * 1000;
 
                 Thread.Sleep(delayTime);
+
                 Common.Show($" Proccessing on {message.BodyAs<CreateCustomerRequest>()}");
                 Common.Show($"Sending by {publisherKey}");
                 var replyMessage = new Message
