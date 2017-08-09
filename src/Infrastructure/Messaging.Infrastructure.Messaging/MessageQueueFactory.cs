@@ -30,6 +30,7 @@ namespace Messaging.Infrastructure.Messaging
             var que = CreateMessageQueue(Direction.Inbound);
 
             que.InitializeInbound(name, pattern);
+
             _queues[key] = que;
             return _queues[key];
         }
@@ -47,6 +48,7 @@ namespace Messaging.Infrastructure.Messaging
             var que = CreateMessageQueue(Direction.Inbound);
 
             que.InitializeInbound(config);
+
             _queues[key] = que;
             return _queues[key];
         }
@@ -60,6 +62,7 @@ namespace Messaging.Infrastructure.Messaging
 
             var que = CreateMessageQueue(Direction.OutBound);
             que.InitializeOutbound(name, pattern);
+
             _queues[key] = que;
             return _queues[key];
         }

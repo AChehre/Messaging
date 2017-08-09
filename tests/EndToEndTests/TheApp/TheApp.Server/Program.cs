@@ -1,12 +1,41 @@
 ﻿using System;
+using Autofac;
+using Messaging.Infrastructure.Messaging;
+using TheApp.Common;
 
 namespace TheApp.Server
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static IContainer _container;
+
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var container = ConfigureDependencies();
+
+
+            CommonClassLibrary.Common.ScreenTopServer();
+
+            var factory = container.Resolve<MessageQueueFactory>();
+            var server = factory.CreateInboundQueue(new MessageQueueConfig("customer", MessagePattern.PublishSubscribe)
+            {
+                SubscribeKey = "create"
+            });
+
+            CommonClassLibrary.Common.Show("Waiting for message ...");
+
+            server.Listen(message => { CommonClassLibrary.Common.Show($"{message.BodyAs<string>()}"); });
+
+            Console.ReadKey();
+        }
+
+
+        private static IContainer ConfigureDependencies()
+        {
+            // Register default dependencies in the application container.
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new AutofacModule());
+            return builder.Build();
         }
     }
 }

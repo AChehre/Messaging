@@ -15,7 +15,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 {"customer-with-pubsub", "tcp://localhost:5559"},
                 {"customer-with-pubsub-answer", "tcp://localhost:5560"},
                 {"mix-customer", "tcp://localhost:5561"},
-                {"mix-publish", "tcp://localhost:5562"}
+                {"mix-publish", "tcp://localhost:5562"},
+                {"create-customer","epgm://localhost:5563" }
             });
         }
     }
