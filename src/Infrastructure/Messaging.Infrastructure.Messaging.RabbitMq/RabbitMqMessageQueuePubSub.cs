@@ -17,35 +17,51 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
 
         public void InitializeOutbound(string name, MessagePattern pattern)
         {
-            throw new NotImplementedException();
+            Config = new MessageQueueConfig(name, pattern);
+            ;
+            Channel = CreateChannel();
+
+            CreateExchange(Config.Name);
         }
 
         public void InitializeInbound(string name, MessagePattern pattern)
         {
-#pragma warning disable 0618
-            _consumer = new QueueingBasicConsumer(Channel);
-#pragma warning restore 0618
+            var config = new MessageQueueConfig(name, pattern);
+            InitializeInbound(config);
         }
 
         public void InitializeInbound(MessageQueueConfig config)
         {
-            throw new NotImplementedException();
+            Config = config;
+
+            Channel = CreateChannel();
+
+            CreateQueue(config.Name);
+#pragma warning disable 0618
+            _consumer = new QueueingBasicConsumer(Channel);
+#pragma warning restore 0618
+            Channel.BasicConsume(config.Name,
+                true,
+                _consumer);
         }
 
         public void Send(Message message)
         {
-            throw new NotImplementedException();
+            Send(message, "");
         }
 
         public void Send(Message message, string key)
         {
-            throw new NotImplementedException();
+            var body = Encoding.UTF8.GetBytes(message.ToJson());
+            Channel.BasicPublish(Config.Name,
+                key,
+                null,
+                body);
         }
 
         public void Received(Action<Message> onMessageReceived)
         {
             var ea = _consumer.Queue.Dequeue();
-
             var result = Encoding.UTF8.GetString(ea.Body);
             onMessageReceived.Invoke(result.DeserializeFromJson<Message>());
         }

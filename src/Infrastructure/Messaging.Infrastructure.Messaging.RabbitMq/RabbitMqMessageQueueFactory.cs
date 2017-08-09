@@ -1,4 +1,5 @@
 ﻿using System;
+using RabbitMQ.Client;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
@@ -32,23 +33,29 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
         {
             var bindings = new RabbitMqBinding
             {
-                new RabbitMqBindingItem("fanout-exchange", "fanout-exchange-queue", "")
+                //new RabbitMqBindingItem("fanout-exchange",ExchangeType.Fanout, "fanout-exchange-queue", ""),
+                new RabbitMqBindingItem("log",ExchangeType.Fanout, "log", "log")
+
             };
 
             var rabbitMqConfig = new RabbitMqConfig("localhost", "guest", "guest", bindings)
             {
-                CreateExchange = true
+                CreateExchange = true,
+                CreateQueue = true
             };
 
-            switch (direction)
-            {
-                case Direction.Inbound:
-                    return new RabbitMqMessageQueueRpcInbound(rabbitMqConfig);
-                case Direction.OutBound:
-                    return new RabbitMqMessageQueueRpcOutbound(rabbitMqConfig);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
+
+            return new RabbitMqMessageQueuePubSub(rabbitMqConfig);
+
+            //switch (direction)
+            //{
+            //    case Direction.Inbound:
+            //        return new RabbitMqMessageQueueRpcInbound(rabbitMqConfig);
+            //    case Direction.OutBound:
+            //        return new RabbitMqMessageQueueRpcOutbound(rabbitMqConfig);
+            //    default:
+            //        throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            //}
         }
     }
 }

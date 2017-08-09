@@ -11,38 +11,25 @@ namespace SimpleTest.Client
         {
             Common.ScreenTopClient();
 
+            var channel = CreateModel();
 
-            var model = CreateModel();
-            var exchangeName = "exchangetestapp01";
+            channel.ExchangeDeclare("logs", "fanout");
 
-            var basicProperties = model.CreateBasicProperties();
-            basicProperties.Persistent = false;
 
-            var message = Encoding.UTF8.GetBytes("Hello Ahmad!");
-            var key = "testapp01";
+            CreateAndBindQueue(channel, "logs", "logsQueue", "logs");
 
-            model.BasicPublish(exchangeName, key, basicProperties, message);
-
-            Common.Show($"Message {Encoding.UTF8.GetString(message)} published.");
+            var message = "Hi ...";
+            var body = Encoding.UTF8.GetBytes(message);
+            channel.BasicPublish("logs",
+                "logs",
+                null,
+                body);
+            Common.Show($" [x] Sent {message}");
 
 
             Console.ReadKey();
         }
 
-        private static void CreateExchangeAndQueue(IModel model, string queueName, string exchangeName)
-        {
-            model.QueueDeclare(queueName, true, false, false, null);
-
-            Common.Show($"Queue {queueName} Created.");
-
-            model.ExchangeDeclare(exchangeName, ExchangeType.Topic, true, false, null);
-
-            Common.Show($"Exchange {exchangeName} Created.");
-
-            model.QueueBind(queueName, exchangeName, "testapp01");
-
-            Common.Show($"Queue {queueName} and exchange {exchangeName} binded.");
-        }
 
         private static IModel CreateModel()
         {
@@ -59,6 +46,12 @@ namespace SimpleTest.Client
             var model = connection.CreateModel();
 
             return model;
+        }
+
+        protected static void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
+        {
+            channel.QueueDeclare(queueName, false, false, true, null);
+            channel.QueueBind(queueName, exchangeName, routingKey);
         }
     }
 }

@@ -2,25 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using Messaging.Infrastructure.Common;
+using Messaging.Infrastructure.Common.Extensions;
 
 namespace Messaging.Infrastructure.Messaging.RabbitMq
 {
     public class RabbitMqBindingItem : ValueObject<RabbitMqBindingItem>
     {
-        public RabbitMqBindingItem(string exchangeName, string queueName, string routingKey)
+        public RabbitMqBindingItem(string exchangeName, string exchangeType, string queueName, string routingKey)
         {
-            if (string.IsNullOrWhiteSpace(exchangeName))
+            if (exchangeName.IsNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(exchangeName));
 
-            if (string.IsNullOrWhiteSpace(queueName))
+
+            if (exchangeType.IsNullOrWhiteSpace())
+                throw new ArgumentNullException(nameof(exchangeType));
+
+            if (queueName.IsNullOrWhiteSpace())
                 throw new ArgumentNullException(nameof(queueName));
 
             QueueName = queueName;
             RoutingKey = routingKey;
             ExchangeName = exchangeName;
+            ExchangeType = exchangeType;
         }
 
+
         public string ExchangeName { get; }
+        public string ExchangeType { get; }
         public string QueueName { get; }
         public string RoutingKey { get; }
     }

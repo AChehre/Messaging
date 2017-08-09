@@ -13,17 +13,45 @@ namespace SimpleTest.Server
             Common.ScreenTopServer();
 
 
-            var queueName = "queuetestapp01";
-
             var channel = CreateModel();
+            channel.ExchangeDeclare("logs", "fanout");
 
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += OnReceived;
+            var queueName = "logsQueue";
 
 
-            channel.BasicConsume(queueName,
+            CreateAndBindQueue(channel, "logs", "logsQueue", "logs");
+
+
+            channel.QueueBind(queueName,
+                "logs",
+                "logs");
+
+            Common.Show(" [*] Waiting for logs.");
+
+            var consumer = new QueueingBasicConsumer(channel);
+
+            //var consumer = new EventingBasicConsumer(channel);
+            //consumer.Received += (model, ea) =>
+            //{
+
+            //    var body = ea.Body;
+            //    var message = Encoding.UTF8.GetString(body);
+            //    Console.WriteLine(" [x] {0}", message);
+            //};
+
+            //channel.BasicConsume(queueName,
+            //    true,
+            //    consumer);
+
+            channel.BasicConsume("logsQueue",
                 true,
                 consumer);
+
+            var ea = consumer.Queue.Dequeue();
+
+                var message = Encoding.UTF8.GetString(ea.Body);
+                Console.WriteLine(" [x] {0}", message);
+
 
             Common.Show("Waiting ...");
             Console.ReadLine();
@@ -51,6 +79,13 @@ namespace SimpleTest.Server
             var model = connection.CreateModel();
 
             return model;
+        }
+
+
+        protected static void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
+        {
+            channel.QueueDeclare(queueName, false, false, true, null);
+            channel.QueueBind(queueName, exchangeName, routingKey);
         }
     }
 }

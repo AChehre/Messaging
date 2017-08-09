@@ -46,22 +46,51 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             return channel;
         }
 
-        protected void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
+
+        protected void CreateExchange(string exchangeName)
         {
-            channel.QueueDeclare(queueName, false, false, true, null);
-            channel.QueueBind(queueName, exchangeName, routingKey);
+            CreateRabbitExchange(exchangeName, GetExchangeType(Config.MessagePattern));
         }
+
+        protected void CreateQueue(string queueName)
+        {
+            var bindingItems = RabbitMqConfig.Bindings.Get(queueName);
+            foreach (var binding in bindingItems)
+            {
+                CreateRabbitExchange(binding.ExchangeName, binding.ExchangeType);
+                CreateAndBindRabbitMqQueue(binding.ExchangeName, binding.QueueName, binding.RoutingKey);
+            }
+        }
+
+
+        protected void CreateAndBindRabbitMqQueue(string exchangeName, string queueName, string routingKey)
+        {
+            CreateRabbitQueue(queueName);
+            BindRabbitQueue(exchangeName, queueName, routingKey);
+        }
+
+
+        protected void CreateRabbitQueue(string queueName)
+        {
+            Channel.QueueDeclare(queueName, false, false, true, null);
+        }
+
+        protected void BindRabbitQueue(string exchangeName, string queueName, string routingKey)
+        {
+            Channel.QueueBind(queueName, exchangeName, routingKey);
+        }
+
 
         protected string GetExchangeType(MessagePattern pattern)
         {
             switch (pattern)
             {
                 case MessagePattern.FireAndForget:
-                    return "fanout";
+                    return ExchangeType.Fanout;
                 case MessagePattern.RequestResponse:
-                    return "direct";
+                    return ExchangeType.Direct;
                 case MessagePattern.PublishSubscribe:
-                    return "fanout";
+                    return ExchangeType.Fanout;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null);
             }
@@ -86,9 +115,9 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             }
         }
 
-        protected void CreateExchange(IModel channel, string exchangeName, string exchangeType)
+        protected void CreateRabbitExchange(string exchangeName, string exchangeType)
         {
-            channel.ExchangeDeclare(exchangeName, exchangeType, true, false, null);
+            Channel.ExchangeDeclare(exchangeName, exchangeType, true, false, null);
         }
 
 
