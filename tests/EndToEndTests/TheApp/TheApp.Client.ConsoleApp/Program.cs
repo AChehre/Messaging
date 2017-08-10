@@ -3,11 +3,10 @@ using Autofac;
 using Messaging.Infrastructure.Messaging;
 using TheApp.Common;
 
-namespace TheApp.Server
+namespace TheApp.Client.ConsoleApp
 {
     internal class Program
     {
-
         private static void Main(string[] args)
         {
             var container = ConfigureDependencies();
@@ -16,14 +15,16 @@ namespace TheApp.Server
             CommonClassLibrary.Common.ScreenTopServer();
 
             var factory = container.Resolve<MessageQueueFactory>();
-            var server = factory.CreateInboundQueue(new MessageQueueConfig("customer", MessagePattern.PublishSubscribe)
+            var client = factory.CreateOutboundQueue("customer", MessagePattern.PublishSubscribe);
+
+            var message = new Message
             {
-                SubscribeKey = "create"
-            });
+                Body = "Console Customer"
+            };
 
-            CommonClassLibrary.Common.Show("Waiting for message ...");
+            client.Send(message, "create");
 
-            server.Listen(message => { CommonClassLibrary.Common.Show($"{message.BodyAs<string>()}"); });
+            CommonClassLibrary.Common.Show($"Message {message.Body} Sended!");
 
             Console.ReadKey();
         }

@@ -71,17 +71,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.MessagingRpcTest.S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PubSub", "PubSub", "{17765B10-5126-4312-84F9-E26C6C1B8C5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.PubSub.Client", "tests\EndToEndTests\RabbitMq\PubSub\RabbitMq.PubSub.Client\RabbitMq.PubSub.Client.csproj", "{924600A0-5AF6-4B3C-902F-A3667A783E16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.PubSub.Client", "tests\EndToEndTests\RabbitMq\PubSub\RabbitMq.PubSub.Client\RabbitMq.PubSub.Client.csproj", "{924600A0-5AF6-4B3C-902F-A3667A783E16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMq.PubSub.Server", "tests\EndToEndTests\RabbitMq\PubSub\RabbitMq.PubSub.Server\RabbitMq.PubSub.Server.csproj", "{9F01AC46-45A7-4FE9-9290-0880FCADF83C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMq.PubSub.Server", "tests\EndToEndTests\RabbitMq\PubSub\RabbitMq.PubSub.Server\RabbitMq.PubSub.Server.csproj", "{9F01AC46-45A7-4FE9-9290-0880FCADF83C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TheApp", "TheApp", "{9FD234CB-94A2-4347-8B52-BEC516AE71C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheApp.Server", "tests\EndToEndTests\TheApp\TheApp.Server\TheApp.Server.csproj", "{36CCC9F8-519A-42BD-A9C8-F1E692003D27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Server", "tests\EndToEndTests\TheApp\TheApp.Server\TheApp.Server.csproj", "{36CCC9F8-519A-42BD-A9C8-F1E692003D27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheApp.Client.Web", "tests\EndToEndTests\TheApp\TheApp.Client.Web\TheApp.Client.Web.csproj", "{CD077B09-CEE0-4A6F-AEA4-44DC5EB496E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Client.Web", "tests\EndToEndTests\TheApp\TheApp.Client.Web\TheApp.Client.Web.csproj", "{CD077B09-CEE0-4A6F-AEA4-44DC5EB496E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheApp.Common", "tests\EndToEndTests\TheApp\TheApp.Common\TheApp.Common.csproj", "{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Common", "tests\EndToEndTests\TheApp\TheApp.Common\TheApp.Common.csproj", "{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheApp.Client.ConsoleApp", "tests\EndToEndTests\TheApp\TheApp.Client.ConsoleApp\TheApp.Client.ConsoleApp.csproj", "{4988CC17-038F-410D-921C-6E5328C001F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +199,10 @@ Global
 		{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4988CC17-038F-410D-921C-6E5328C001F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4988CC17-038F-410D-921C-6E5328C001F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4988CC17-038F-410D-921C-6E5328C001F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4988CC17-038F-410D-921C-6E5328C001F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -240,5 +246,6 @@ Global
 		{36CCC9F8-519A-42BD-A9C8-F1E692003D27} = {9FD234CB-94A2-4347-8B52-BEC516AE71C7}
 		{CD077B09-CEE0-4A6F-AEA4-44DC5EB496E9} = {9FD234CB-94A2-4347-8B52-BEC516AE71C7}
 		{693D1D5D-3CA7-4B80-BCDA-0DE9D30CF157} = {9FD234CB-94A2-4347-8B52-BEC516AE71C7}
+		{4988CC17-038F-410D-921C-6E5328C001F3} = {9FD234CB-94A2-4347-8B52-BEC516AE71C7}
 	EndGlobalSection
 EndGlobal
