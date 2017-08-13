@@ -16,7 +16,7 @@ namespace TheApp.Server
             CommonClassLibrary.Common.ScreenTopServer();
 
             var factory = container.Resolve<MessageQueueFactory>();
-            var server = factory.CreateInboundQueue(new MessageQueueConfig("customer", MessagePattern.PublishSubscribe)
+            var server = factory.CreateInboundQueue(new MessageQueueConfig("create-customer-sub", MessagePattern.PublishSubscribe)
             {
                 SubscribeKey = "create"
             });

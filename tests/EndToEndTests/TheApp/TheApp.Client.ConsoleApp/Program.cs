@@ -12,10 +12,10 @@ namespace TheApp.Client.ConsoleApp
             var container = ConfigureDependencies();
 
 
-            CommonClassLibrary.Common.ScreenTopServer();
+            CommonClassLibrary.Common.ScreenTopClient();
 
             var factory = container.Resolve<MessageQueueFactory>();
-            var client = factory.CreateOutboundQueue("customer", MessagePattern.PublishSubscribe);
+            var client = factory.CreateOutboundQueue("create-customer-pub", MessagePattern.PublishSubscribe);
 
             var message = new Message
             {

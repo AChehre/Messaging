@@ -34,8 +34,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 case MessagePattern.PublishSubscribe:
-                    _socket = new PublisherSocket();
-                    _socket.Bind(Address);
+                    _socket = new PublisherSocket(Address);
+                    //_socket.Bind(Address);
                     break;
 
                 default:
@@ -66,8 +66,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                     break;
 
                 case MessagePattern.PublishSubscribe:
-                    var socket = new SubscriberSocket();
-                    socket.Connect(Address);
+                    var socket = new SubscriberSocket(Address);
+                    //socket.Connect(Address);
                     //socket.Options.SendHighWatermark = 1000;
                     socket.Subscribe(Config.SubscribeKey);
                     _socket = socket;
