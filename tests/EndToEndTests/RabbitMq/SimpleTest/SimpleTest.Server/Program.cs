@@ -27,9 +27,9 @@ namespace SimpleTest.Server
                 "logs");
 
             Common.Show(" [*] Waiting for logs.");
-
+#pragma warning disable 0618
             var consumer = new QueueingBasicConsumer(channel);
-
+#pragma warning restore 0618
             //var consumer = new EventingBasicConsumer(channel);
             //consumer.Received += (model, ea) =>
             //{
@@ -49,8 +49,8 @@ namespace SimpleTest.Server
 
             var ea = consumer.Queue.Dequeue();
 
-                var message = Encoding.UTF8.GetString(ea.Body);
-                Console.WriteLine(" [x] {0}", message);
+            var message = Encoding.UTF8.GetString(ea.Body);
+            Console.WriteLine(" [x] {0}", message);
 
 
             Common.Show("Waiting ...");
@@ -82,7 +82,8 @@ namespace SimpleTest.Server
         }
 
 
-        protected static void CreateAndBindQueue(IModel channel, string exchangeName, string queueName, string routingKey)
+        protected static void CreateAndBindQueue(IModel channel, string exchangeName, string queueName,
+            string routingKey)
         {
             channel.QueueDeclare(queueName, false, false, true, null);
             channel.QueueBind(queueName, exchangeName, routingKey);

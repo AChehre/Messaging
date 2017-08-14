@@ -26,7 +26,13 @@ namespace RabbitMq.RpcTest.Client
     {
         private readonly IModel channel;
         private readonly IConnection connection;
+
+
+#pragma warning disable 0618
         private readonly QueueingBasicConsumer consumer;
+#pragma warning restore 0618
+
+
         private readonly string replyQueueName;
 
         public RPCClient()
@@ -35,7 +41,11 @@ namespace RabbitMq.RpcTest.Client
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
             replyQueueName = channel.QueueDeclare().QueueName;
+
+#pragma warning disable 0618
             consumer = new QueueingBasicConsumer(channel);
+#pragma warning restore 0618
+
             channel.BasicConsume(replyQueueName,
                 true,
                 consumer);
@@ -49,7 +59,7 @@ namespace RabbitMq.RpcTest.Client
             props.CorrelationId = corrId;
 
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            channel.BasicPublish("","rpc_queue",props,
+            channel.BasicPublish("", "rpc_queue", props,
                 messageBytes);
 
             while (true)

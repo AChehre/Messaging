@@ -1,57 +1,41 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using Autofac;
 using Messaging.Infrastructure.Messaging;
+using Messaging.Infrastructure.Messaging.ZeroMq.Consolsys;
 using TheApp.Common;
 
 namespace TheApp.Server
 {
     internal class Program
     {
-
         private static void Main(string[] args)
         {
             var container = ConfigureDependencies();
 
-
             CommonClassLibrary.Common.ScreenTopServer();
 
-            var factory = container.Resolve<MessageQueueFactory>();
-            var serverReceive = factory.CreateInboundQueue(new MessageQueueConfig("create-customer-sub", MessagePattern.PublishSubscribe)
-            {
-                SubscribeKey = "create"
-            });
+            var factory = container.Resolve<IMessageQueueFactory>();
+
+            var messagingServer = new ZeroMqMessagingServer(factory);
+
 
             CommonClassLibrary.Common.Show("Waiting for message ...");
 
-            serverReceive.Listen(message =>Process(message, factory));
+            var request = messagingServer.ReceiveRequest<string>();
 
-            Console.ReadKey();
-        }
+            CommonClassLibrary.Common.Show($"Received {request}");
 
-        public static void Process(Message message, MessageQueueFactory factory)
-        {
-            CommonClassLibrary.Common.Show($"Received {message.BodyAs<string>()}");
-
-            var key = Encoding.UTF8.GetString(message.ResponseKey);
 
             CommonClassLibrary.Common.Show($"Start to process ...");
-            var serverSend = factory.CreateOutboundQueue("customer-created", MessagePattern.PublishSubscribe);
-
             //The Process ...
             Thread.Sleep(3000);
 
-            CommonClassLibrary.Common.Show($"End of process ...");
+            var result = $"{request} Result";
+            CommonClassLibrary.Common.Show($"Result for {result} replied.");
+            messagingServer.SendResult(result);
 
-         
-
-            serverSend.Send(new Message()
-            {
-                Body = $"{message.BodyAs<string>()} Result"
-            }, key);
-
-            CommonClassLibrary.Common.Show($"Result for {key} sended.");
+            Console.ReadKey();
         }
 
 

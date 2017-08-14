@@ -85,7 +85,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Common", "tests\EndT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Client.ConsoleApp", "tests\EndToEndTests\TheApp\TheApp.Client.ConsoleApp\TheApp.Client.ConsoleApp.csproj", "{4988CC17-038F-410D-921C-6E5328C001F3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Xpubsub", "tests\EndToEndTests\TheApp\TheApp.Xpubsub\TheApp.Xpubsub.csproj", "{7DC36BB7-AE32-4016-B753-E70461755EEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheApp.Intermediary", "tests\EndToEndTests\TheApp\TheApp.Xpubsub\TheApp.Intermediary.csproj", "{7DC36BB7-AE32-4016-B753-E70461755EEA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConsolsysApp", "ConsolsysApp", "{5F7DFAE4-AF6B-42AE-A614-11A63B68B51B}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text;
 using Autofac;
 using Messaging.Infrastructure.Messaging;
+using Messaging.Infrastructure.Messaging.ZeroMq.Consolsys;
 using TheApp.Common;
 
 namespace TheApp.Client.ConsoleApp
@@ -11,37 +11,22 @@ namespace TheApp.Client.ConsoleApp
         private static void Main(string[] args)
         {
             var container = ConfigureDependencies();
-
+            var factory = container.Resolve<IMessageQueueFactory>();
 
             CommonClassLibrary.Common.ScreenTopClient();
 
-            var factory = container.Resolve<MessageQueueFactory>();
-            var clientSend = factory.CreateOutboundQueue("create-customer-pub", MessagePattern.PublishSubscribe);
 
-            var key = Guid.NewGuid().ToString();
+            var messagingClient = new ZeroMqMessagingClient(factory);
 
-            var clientReceive = factory.CreateInboundQueue(
-                new MessageQueueConfig("customer-created", MessagePattern.PublishSubscribe)
-                {
-                    SubscribeKey = key
-                });
+            var message = "Console Customer";
+            CommonClassLibrary.Common.Show($"{message} requested.");
+
+            messagingClient.SendRequest(message);
+
+            var result = messagingClient.ReceiveResult<string>();
 
 
-            var message = new Message
-            {
-                Body = "Console Customer",
-                ResponseKey = Encoding.UTF8.GetBytes(key)
-            };
-
-            clientSend.Send(message, "create");
-
-            CommonClassLibrary.Common.Show($"Message {message.Body} Sended!");
-
-            CommonClassLibrary.Common.Show($"Wait for {key} ...");
-            clientReceive.Received(result =>
-            {
-                CommonClassLibrary.Common.Show($"Received {result.BodyAs<string>()}");
-            });
+            CommonClassLibrary.Common.Show($"Received {result}");
 
 
             Console.ReadKey();

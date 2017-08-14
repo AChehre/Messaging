@@ -8,7 +8,7 @@ namespace TheApp.Common
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ZeroMqMessageQueueFactory>().As<MessageQueueFactory>();
+            builder.RegisterType<ZeroMqMessageQueueFactory>().As<IMessageQueueFactory>();
         }
 
     }
