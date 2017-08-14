@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Autofac;
 using Messaging.Infrastructure.Messaging;
 using TheApp.Common;
@@ -15,16 +16,33 @@ namespace TheApp.Client.ConsoleApp
             CommonClassLibrary.Common.ScreenTopClient();
 
             var factory = container.Resolve<MessageQueueFactory>();
-            var client = factory.CreateOutboundQueue("create-customer-pub", MessagePattern.PublishSubscribe);
+            var clientSend = factory.CreateOutboundQueue("create-customer-pub", MessagePattern.PublishSubscribe);
+
+            var key = Guid.NewGuid().ToString();
+
+            var clientReceive = factory.CreateInboundQueue(
+                new MessageQueueConfig("customer-created", MessagePattern.PublishSubscribe)
+                {
+                    SubscribeKey = key
+                });
+
 
             var message = new Message
             {
-                Body = "Console Customer"
+                Body = "Console Customer",
+                ResponseKey = Encoding.UTF8.GetBytes(key)
             };
 
-            client.Send(message, "create");
+            clientSend.Send(message, "create");
 
             CommonClassLibrary.Common.Show($"Message {message.Body} Sended!");
+
+            CommonClassLibrary.Common.Show($"Wait for {key} ...");
+            clientReceive.Received(result =>
+            {
+                CommonClassLibrary.Common.Show($"Received {result.BodyAs<string>()}");
+            });
+
 
             Console.ReadKey();
         }

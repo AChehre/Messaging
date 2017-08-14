@@ -19,7 +19,8 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq
                 {"create-customer", "epgm://localhost:5563"},
 
                 {"create-customer-pub", ">tcp://127.0.0.1:5678"},
-                {"create-customer-sub", ">tcp://127.0.0.1:1234"}
+                {"create-customer-sub", ">tcp://127.0.0.1:1234"},
+                {"customer-created", "tcp://127.0.0.1:1235"}
             });
         }
     }

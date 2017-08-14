@@ -5,12 +5,12 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq.Consolsys
 {
     public class ZeroMqMessagingServer : IMessagingServer
     {
-        public void Send<TMessage>(TMessage message)
+        public void SendResult<TMessage>(TMessage message)
         {
             throw new NotImplementedException();
         }
 
-        public TResult Receive<TResult>()
+        public TResult ReceiveRequest<TResult>()
         {
             throw new NotImplementedException();
         }

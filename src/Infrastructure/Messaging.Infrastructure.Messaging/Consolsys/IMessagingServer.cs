@@ -2,7 +2,7 @@
 {
     public interface IMessagingServer
     {
-        void Send<TMessage>(TMessage message);
-        TResult Receive<TResult>();
+        void SendResult<TMessage>(TMessage message);
+        TResult ReceiveRequest<TResult>();
     }
 }
