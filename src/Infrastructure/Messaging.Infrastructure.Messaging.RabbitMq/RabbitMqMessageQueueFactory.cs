@@ -45,17 +45,17 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq
             };
 
 
-            return new RabbitMqMessageQueuePubSub(rabbitMqConfig);
+            //return new RabbitMqMessageQueuePubSub(rabbitMqConfig);
 
-            //switch (direction)
-            //{
-            //    case Direction.Inbound:
-            //        return new RabbitMqMessageQueueRpcInbound(rabbitMqConfig);
-            //    case Direction.OutBound:
-            //        return new RabbitMqMessageQueueRpcOutbound(rabbitMqConfig);
-            //    default:
-            //        throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            //}
+            switch (direction)
+            {
+                case Direction.Inbound:
+                    return new RabbitMqMessageQueueRpcInbound(rabbitMqConfig);
+                case Direction.OutBound:
+                    return new RabbitMqMessageQueueRpcOutbound(rabbitMqConfig);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+            }
         }
     }
 }

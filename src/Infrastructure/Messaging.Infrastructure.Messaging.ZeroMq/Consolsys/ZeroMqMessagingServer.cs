@@ -8,8 +8,9 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq.Consolsys
     {
         private readonly IMessageQueueFactory _factory;
         private readonly IMessageQueue _serverReceive;
-        private IMessageQueue _serverSend;
         private string _key;
+        private IMessageQueue _serverSend;
+
         public ZeroMqMessagingServer(IMessageQueueFactory factory)
         {
             _factory = factory;
@@ -21,21 +22,21 @@ namespace Messaging.Infrastructure.Messaging.ZeroMq.Consolsys
                 });
         }
 
-        public TResult ReceiveRequest<TResult>()
+        public void ReceiveRequest<TRequest>(Action<TRequest> onRequestReceived)
         {
-            var result = default(TResult);
+            var result = default(TRequest);
             _serverReceive.Received(message =>
             {
-                result = message.BodyAs<TResult>();
+                result = message.BodyAs<TRequest>();
                 _key = Encoding.UTF8.GetString(message.ResponseKey);
             });
             _serverSend = _factory.CreateOutboundQueue("customer-created", MessagePattern.PublishSubscribe);
-            return result;
+            onRequestReceived.Invoke(result);
         }
 
         public void SendResult<TMessage>(TMessage message)
         {
-            _serverSend.Send(new Message()
+            _serverSend.Send(new Message
             {
                 Body = message
             }, _key);

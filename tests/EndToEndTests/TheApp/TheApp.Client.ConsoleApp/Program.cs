@@ -1,7 +1,6 @@
 ﻿using System;
 using Autofac;
-using Messaging.Infrastructure.Messaging;
-using Messaging.Infrastructure.Messaging.ZeroMq.Consolsys;
+using Messaging.Infrastructure.Messaging.Consolsys;
 using TheApp.Common;
 
 namespace TheApp.Client.ConsoleApp
@@ -11,12 +10,10 @@ namespace TheApp.Client.ConsoleApp
         private static void Main(string[] args)
         {
             var container = ConfigureDependencies();
-            var factory = container.Resolve<IMessageQueueFactory>();
 
             CommonClassLibrary.Common.ScreenTopClient();
 
-
-            var messagingClient = new ZeroMqMessagingClient(factory);
+            var messagingClient = container.Resolve<IMessagingClient>();
 
             var message = "Console Customer";
             CommonClassLibrary.Common.Show($"{message} requested.");
@@ -35,7 +32,6 @@ namespace TheApp.Client.ConsoleApp
 
         private static IContainer ConfigureDependencies()
         {
-            // Register default dependencies in the application container.
             var builder = new ContainerBuilder();
             builder.RegisterModule(new AutofacModule());
             return builder.Build();

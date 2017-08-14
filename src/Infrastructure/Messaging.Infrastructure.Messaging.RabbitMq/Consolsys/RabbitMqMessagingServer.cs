@@ -16,17 +16,21 @@ namespace Messaging.Infrastructure.Messaging.RabbitMq.Consolsys
             _server = factory.CreateInboundQueue("rpc_queue", MessagePattern.FireAndForget);
         }
 
-        public TResult ReceiveRequest<TResult>()
+
+        public void ReceiveRequest<TRequest>(Action<TRequest> onRequestReceived)
         {
-            var result = default(TResult);
-            _server.Received(message =>
-            {
-                result = message.BodyAs<TResult>();
-                _responseAddress = message.ResponseAddress;
-                _properties = message.Properties;
-                _responseKey = message.ResponseKey;
-            });
-            return result;
+         
+            _server.Received(message => { OnReceive(onRequestReceived, message); });
+         
+        }
+
+        private void OnReceive<TRequest>(Action<TRequest> onRequestReceived, Message message)
+        {
+            var result = message.BodyAs<TRequest>();
+            _responseAddress = message.ResponseAddress;
+            _properties = message.Properties;
+            _responseKey = message.ResponseKey;
+            onRequestReceived.Invoke(result);
         }
 
         public void SendResult<TMessage>(TMessage message)

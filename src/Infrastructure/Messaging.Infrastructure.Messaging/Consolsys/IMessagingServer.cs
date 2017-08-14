@@ -1,8 +1,10 @@
-﻿namespace Messaging.Infrastructure.Messaging.Consolsys
+﻿using System;
+
+namespace Messaging.Infrastructure.Messaging.Consolsys
 {
     public interface IMessagingServer
     {
-        TResult ReceiveRequest<TResult>();
+        void ReceiveRequest<TRequest>(Action<TRequest> onRequestReceived);
         void SendResult<TMessage>(TMessage message);
       
     }
